@@ -1,0 +1,268 @@
+====== Element.Position ======
+[[http://www.clientcide.com/docs/Element/Element.Position|docs]]
+
+This script concerns itself with positioning elements relative to each other. It's easy to set an element's position to a specific location on the screen, but there's a lot more effort involved if you want to position an element's upper right corner on the upper left corner of another...
+
+//.setPosition// lets you position an element relative to another one. So if you have an element and you want it next to or on top of another, this extension helps you handle that positioning.
+
+The element you are positioning has to be positioned absolutely, and if you don't specify an element that you're going to make it relevant to, it'll use the document window. Here are some examples:
+<html>
+<div id="setPositionTarget" style="width: 30px; height: 30px; border: 1px solid #000; background-color: #600; z-index:99999"></div>
+<script>document.id('setPositionTarget').makeDraggable()</script>
+<br/><br/><br/><br/>
+</html>
+
+The default is to position is centered relative to the target:
+<code javascript exec>
+document.id('setPositionTarget').setPosition(); //centered in the window
+</code>
+
+<code javascript exec>
+document.id('setPositionTarget').setPosition({
+  relativeTo: document.id('fxTarget') /*centered over a target*/
+}); 
+</code>
+
+You can also specify a location relative to the relativeTo object:
+<code javascript exec>
+document.id('setPositionTarget').setPosition({
+  relativeTo: document.id('fxTarget'),
+  position: 'upperRight'
+}); 
+</code>
+
+===== Specifying Position =====
+There are two ways to specify the position: strings and objects. The strings are combinations of "left", "right", and "center" with "top" (or "upper"), "bottom", and "center". These are case insensitive. These translate to:
+  * upperLeft, topLeft (same thing) - or upperleft, leftupper, LEFTUPPER whatever.
+  * bottomLeft
+  * centerLeft
+  * upperRight, topRight (same thing)
+  * bottomRight
+  * centerRight
+  * centerTop
+  * centerBottom
+  * center
+
+Alternatively, you can be a little more expicit by using an object with //x// and //y// values. Acceptable values for the //x// axis are "left", "right", and "center", and for //y//	you can use "top", "bottom" and "center".
+
+  * {x: 'left', y: 'top'} -- same as "upperLeft" or "topLeft"
+  * {x: 'left', y: 'bottom'} -- same as "bottomLeft"
+  * etc.
+
+Using these options you can specify a position for each corner of the relativeTo object as well as the points between those corners (center left, top, right, bottom and the center of the entire object).
+
+<code javascript exec>
+document.id('setPositionTarget').setPosition({
+  relativeTo: document.id('fxTarget'),
+  position: 'upperLeft'
+}); 
+</code>
+The above example is the same as this one:
+<code javascript exec>
+document.id('setPositionTarget').setPosition({
+  relativeTo: document.id('fxTarget'),
+  position: {
+		x: 'left',
+		y: 'top'
+	}
+}); 
+</code>
+
+<code javascript exec>
+document.id('setPositionTarget').setPosition({
+  relativeTo: document.id('fxTarget'),
+  position: 'bottomLeft'
+}); 
+</code>
+Same as:
+<code javascript exec>
+document.id('setPositionTarget').setPosition({
+  relativeTo: document.id('fxTarget'),
+  position: {
+		x: 'left',
+		y: 'bottom'
+	}
+}); 
+</code>
+
+
+<code javascript exec>
+document.id('setPositionTarget').setPosition({
+  relativeTo: document.id('fxTarget'),
+  position: 'bottomCenter'
+}); 
+</code>
+Same as:
+<code javascript exec>
+document.id('setPositionTarget').setPosition({
+  relativeTo: document.id('fxTarget'),
+  position: {
+		x: 'center',
+		y: 'bottom'
+	}
+}); 
+</code>
+
+<code javascript exec>
+document.id('setPositionTarget').setPosition({
+  relativeTo: document.id('fxTarget'),
+  position: 'leftCenter'
+}); 
+</code>
+Same as:
+<code javascript exec>
+document.id('setPositionTarget').setPosition({
+  relativeTo: document.id('fxTarget'),
+  position: {
+		x: 'left',
+		y: 'center'
+	}
+}); 
+</code>
+
+===== Offsets =====
+
+There's also an offset option:
+<code javascript exec>
+document.id('setPositionTarget').setPosition({
+  relativeTo: document.id('fxTarget'),
+  position: 'upperRight',
+  offset: {x: 20, y: 20} /*move over and down*/
+}); 
+</code>
+
+Additionally, you can specify an edge option that allows you to align the specified edge of the element relative to the relativeTo element's edge specified in the position argument. This lets you, for instance, position the upper right corner of the element to the bottom left corner of the relativeTo element.
+
+Examples:
+
+<code javascript exec>
+/* upperRight of element aligned to upperRight of relativeTo element*/
+document.id('setPositionTarget').setPosition({
+  relativeTo: document.id('fxTarget'),
+  position: 'upperRight',
+  edge: 'upperRight'
+}); 
+</code>
+
+<code javascript exec>
+/* bottomLeft of element aligned to bottomLeft of relativeTo element*/
+document.id('setPositionTarget').setPosition({
+  relativeTo: document.id('fxTarget'),
+  position: 'bottomLeft',
+  edge: 'bottomLeft'
+}); 
+</code>
+
+<code javascript exec>
+/* center of element aligned to upperRight of relativeTo element*/
+document.id('setPositionTarget').setPosition({
+  relativeTo: document.id('fxTarget'),
+  position: 'upperRight',
+  edge: 'center'
+}); 
+</code>
+
+
+<code javascript exec>
+/* center of element aligned to upperRight of relativeTo element*/
+document.id('setPositionTarget').setPosition({
+  relativeTo: document.id('fxTarget'),
+  position: 'centerRight',
+  edge: 'center'
+}); 
+</code>
+
+<code javascript exec>
+/* center of element aligned to upperRight of relativeTo element*/
+document.id('setPositionTarget').setPosition({
+  relativeTo: document.id('fxTarget'),
+  position: 'centerBottom',
+  edge: 'centerTop'
+}); 
+</code>
+
+Again, you can use objects to describe these positions:
+<code javascript exec>
+/* center of element aligned to upperRight of relativeTo element*/
+document.id('setPositionTarget').setPosition({
+  relativeTo: document.id('fxTarget'),
+  position: {
+		x: 'right',
+		y: 'top'
+	},
+  edge: {
+		x: 'left',
+		y: 'center'
+	}
+}); 
+</code>
+
+===== Ignoring Margins =====
+
+It's possible to position an element and ignore the margins around it. Here's an example; the first shows you what it looks like with the margins applied but not ignored, then 2 seconds delayed is the method to have it ignore the margin.
+
+<code javascript exec>
+document.id('setPositionTarget').setStyles({
+    'margin-right': 30,
+    'margin-top': 50,
+    'margin-left': 20,
+    'margin-bottom': 10
+});
+document.id('setPositionTarget').setPosition({
+  relativeTo: document.id('fxTarget'),
+  position: {
+    x: 'left',
+    y: 'top'
+  },
+  edge: {
+    x: 'right',
+    y: 'top'
+  }
+});
+
+(function(){
+	/*now ignore the margins*/
+	document.id('setPositionTarget').setPosition({
+	  relativeTo: document.id('fxTarget'),
+	  ignoreMargins: true,
+	  position: {
+	    x: 'left',
+	    y: 'top'
+	  },
+	  edge: {
+	    x: 'left',
+	    y: 'top'
+	  }
+	});
+}).delay(2000);
+
+
+/*put the margins back for other examples*/
+(function(){
+	document.id('setPositionTarget').setStyles({
+	    'margin-right': 0,
+	    'margin-top': 0,
+	    'margin-left': 0,
+	    'margin-bottom': 0
+	});
+}).delay(5000);
+</code>
+
+
+
+===== returnPos =====
+An additional option for //.setPosition// is //returnPos//.
+
+//returnPos// will just return the x/y coordinates of where the element would move to, but //not move it//. This lets you use //setPosition// to get these coords without changing anything.
+
+<code javascript exec>
+document.id('setPositionTarget').setPosition({
+  relativeTo: document.id('fxTarget'),
+  position: 'upperRight',
+  offset: {x: 20, y: 20},
+  returnPos: true
+}); //returns something like {top: "123px", left: "234px"}
+</code>
+
+===== Fx.Move =====
+You can also use [[clientcide-libraries:05-fx:01-fx.move|Fx.Move]] to position an element. It works just like //setPosition// except it allows you to have the element transition to the location instead of just jump there.

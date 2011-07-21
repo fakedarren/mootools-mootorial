@@ -1,0 +1,91 @@
+====== Fupdate.Prompt ======
+
+[[http://www.clientcide.com/docs/Forms/Fupdate.Prompt|docs]]
+
+These classes pick up where [[05.1-fupdate|Fupdate]] and [[05.2-fupdate.append|Fupdate.append]] leave off and do pretty much the same thing. The difference here is that the form is displayed to the user in a prompt.
+
+In this first example, the form is the same as the example for //Fupdate//, only I've hidden it (//display:none//) and then passed it to //Fupdate.Prompt// so that it'll be used in the popup.
+
+<html>
+<div style="display: none">
+	<form action="/wiki/simple.php" id="fupdateForm">
+		<input type="text" name="message" title="enter some text here" class="OverTxt">
+		<input type="submit">
+	</form>
+</div>
+<ul id="fupdateReply">
+	<li>I'm a list item that will be replaced when you submit the form in the popup.</li>
+</ul>
+<script>
+	window.addEvent('domready', function(){
+		new OverText($$('input.OverTxt'));
+	});
+</script>
+</html>
+
+<code javascript exec>
+new Fupdate.Prompt(document.id('fupdateForm'), document.id('fupdateReply'), {
+	stickyWinOptions: {
+		/* this just updates the location
+		   of the text over the input */
+		onDisplay: OverText.update
+	}
+}).prompt();
+</code>
+
+===== Fupdate.Append.Prompt =====
+
+This does the same thing as //Fupdate.Append//, except, as with //Fupdate.Prompt// the form is displayed in a popup.
+
+<html>
+<div style="display: none">
+	<form action="/wiki/simple.php" id="fupdateAppendForm">
+		<input type="text" name="message" title="enter some text here" class="OverTxt">
+		<input type="submit">
+	</form>
+</div>
+<ul id="fupdateAppendReply">
+	<li>I'm a list item that will be pushed down (but not replaced) when you submit the form in the popup.</li>
+</ul>
+</html>
+
+<code javascript exec>
+new Fupdate.Append.Prompt(document.id('fupdateAppendForm'), document.id('fupdateAppendReply'), {
+	stickyWinOptions: {
+		/* this just updates the location
+		   of the text over the input */
+		onDisplay: OverText.update
+	},
+	inject:'top'
+}).prompt();
+</code>
+
+===== Fupdate.AjaxPrompt =====
+
+Finally, we have two classes that do the same as the classes above, except they fetch their form data from the server instead of the DOM.
+
+<html>
+<ul id="fupdateAjaxPromptReply">
+	<li>I'm a list item that will be replaced when you submit the form in the popup.</li>
+</ul>
+</html>
+
+<code javascript exec>
+new Fupdate.AjaxPrompt('/wiki/simpleForm.html', document.id('fupdateAjaxPromptReply')).prompt();
+</code>
+
+===== Fupdate.Append.AjaxPrompt =====
+
+Yep. You guessed it. The final class appends data to the target and fetches its form via Ajax.
+
+<html>
+<ul id="fupdateAppendAjaxPromptReply">
+	<li>I'm a list item that will be pushed down (but not replaced) when you submit the form in the popup.</li>
+</ul>
+</html>
+
+<code javascript exec>
+new Fupdate.Append.AjaxPrompt('/wiki/simpleForm.html', document.id('fupdateAppendAjaxPromptReply'), {
+	inject: 'top'
+}).prompt();
+</code>

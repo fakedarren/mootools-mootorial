@@ -1,0 +1,72 @@
+====== OverText ======
+
+[[http://www.mootools.net/docs/more/Forms/OverText|docs]]
+
+//OverText// is a class that lets you overlay instructions above an input. You can accomplish a similar effecty by setting the value of the input as the instruction and then resetting the value when the user clicks into the input, but this method has three downsides: the instruction might get submitted by the form, you can't style the instruction text differently, if you're using a clientside form validator like //FormValidator.js// then the value will fail validation.
+
+So //OverText// places a new DOM element above the input and hides it and shows it when there clicks in and out of an empty input:
+
+Here's the html I'm using: 
+<code html>
+label.overTxtLabel {
+	font-weight: bold;
+	font-family: arial, helvetica, verdana;
+	font-size: 12px;
+	color: #999;
+}
+</style>
+<input id="overTextTest" alt="Enter some text here" style="width: 300px">
+</code>
+
+<html>
+<style>
+label.overTxtLabel {
+	font-weight: bold;
+	font-family: arial, helvetica, verdana;
+	font-size: 12px;
+	color: #999;
+}
+</style>
+<input id="overTextTest" alt="Enter some text here" style="width: 300px">
+</html>
+<code javascript exec>
+new OverText($$('#overTextTest'));
+</code>
+
+===== .reposition / .repositionAll =====
+You can use the //.reposition// method to have the class re-calculate the desired location and visibility for an input's //OverText// on demand. Use //.repositionAll// to have it perform this for all the inputs it manages.
+
+<code javascript>
+myOverText.reposition(myInput); //reassert a single input's text element
+myOverText.repositionAll(); //reassert all text elements the controlled by the class
+</code>
+
+===== Polling =====
+With some inputs (especially username/password inputs) the content of the input can change without the user's interaction. //OverText// monitors the focus, blur, and change events to show and hide it's text elements, but if the browser fills in the password, these events are not activated.
+
+You can instruct OverText to poll the inputs regularly looking for values. This introduces a minimal overhead into your page, so it's not on by default.
+
+<code javascript>
+new OverText($$('input'), {
+	poll: true,
+	pollInterval: 400 //this is the default
+});
+</code>
+
+==== .start/stopPolling ====
+You can also start and stop polling manually:
+
+<code javascript>
+myOverText.startPolling();
+myOverText.stopPolling();
+</code>
+
+===== OverText.update =====
+This static method on the //OverText// namespace will execute the //repositionAll// method on all instances of //OverText// that are running. This is useful if something occurs that has rearranged your document dramatically.
+
+<code javascript>
+var myOverText_1 = new OverText(...);
+var myOverText_2 = new OverText(...);
+//...later
+OverText.update(); //updates all the instances of OverText
+</code>

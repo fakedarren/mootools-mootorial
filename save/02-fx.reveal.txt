@@ -1,0 +1,68 @@
+====== Fx.Reveal ======
+
+[[http://www.clientcide.com/docs/Fx/Fx.Reveal|docs]]
+
+//Fx.Reveal// extends //Fx.Morph// to let you transition an element from being hidden (display:none) to visible (display:block) in a smooth way. Its //.dissolve// method calculates the height of the margin, padding, border, and height of the element and transitions these along with the opacity to zero. After the transition, it sets these values back to what they were and sets display to "none". //.reveal// does the same thing in reverse.
+
+<html>
+<p id="revealExample" style="padding: 4px; margin: 4px; border: 1px solid #333;overflow:hidden;">I'm a paragraph with padding, margin, and border values. When //dissolve// is executed, these values will go to zero, but be restored at the end of the transition when display will be set to "none"</p><br/><br/>
+</html>
+
+
+<code javascript exec>
+new Fx.Reveal(document.id('revealExample')).dissolve();
+</code>
+<code javascript exec>
+new Fx.Reveal(document.id('revealExample')).reveal();
+</code>
+
+There's also a toggle method:
+<code javascript exec>
+new Fx.Reveal(document.id('revealExample')).toggle();
+</code>
+
+===== Element.reveal =====
+//Element.dissolve(options)// and //Element.reveal(options)// are just shortcuts to execute the //.dissolve// and //.reveal// methods on the "built-in" instance of //Fx.Reveal// (much like //Element.tween// is a shortcut to a "built-in" instance of //Fx.Tween//).
+
+<html>
+<p id="revealExample2" style="padding: 4px; margin: 4px; border: 1px solid #333;overflow:hidden;">I'm a paragraph with padding, margin, and border values. When //dissolve// is executed, these values will go to zero, but be restored at the end of the transition when display will be set to "none"</p><br/><br/>
+</html>
+
+<code javascript exec>
+document.id('revealExample2').dissolve();
+</code>
+<code javascript exec>
+document.id('revealExample2').reveal();
+</code>
+
+
+==== Using Element.get and Element.set ====
+Like //Fx.Tween// or //Fx.Morph//, you can use //Element.get// and //Element.set// to control the "built-in" version of //Fx.Reveal//:
+
+<code javascript>
+document.id('myElement').set('reveal', {
+	duration: 1000,
+	transition: 'bounce:out'
+});
+</code>
+<code javascript>
+document.id('myElement').get('reveal').toggle();
+</code> 
+
+===== Element.nix =====
+This shortcut calls the //dissolve// method on the element and, when it completes, removes the element from the DOM. The method takes two arguments - the options to pass along to //Fx.Reveal// and a boolean. If //true//, the element will be destroyed entirely (with //Element.destroy//), otherwise it will be erased from the DOM (with //Element.erase//) - this is the default. You can specify one or both of these arguments, and the order doesn't matter. Note that in these examples, the //document.id('fxTarget')// is recreated each time.
+
+<code javascript exec>
+document.id('fxTarget').nix(); //erase it
+</code>
+<code javascript exec>
+document.id('fxTarget').nix(true); //destroy
+</code>
+<code javascript exec>
+document.id('fxTarget').nix({duration: 1000}); 
+//dissolve over 1 second, then erase
+</code>
+<code javascript exec>
+document.id('fxTarget').nix({duration: 1000}, true); 
+//dissolve over 1 second, then destroy
+</code>

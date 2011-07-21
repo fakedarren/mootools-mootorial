@@ -1,0 +1,55 @@
+====== Chain.Wait ======
+
+[[http://www.clientcide.com/docs/Class.Extras/Chain.Wait|docs]]
+
+MooTools includes the very handy [[http://www.mootorial.com/wiki/mootorial/02-class/01-class.extras#the-chain-class|Chain]] class which lets you stack up methods to fire one after the other. Here's a brief example of chaining using [[http://www.mootorial.com/wiki/mootorial/06-fx/01-fx.tween|Fx.tween]]:
+
+<code javascript exec>
+document.id('fxTarget').set('tween', {
+	link: 'chain'
+}).tween('height', 0).tween('height', 100).tween('height', 0).tween('height', 100);
+</code>
+
+One of the things I wanted to be able to do was something like the example above, but also introduce pauses between the instructions.
+
+===== Enter Chain.wait =====
+On it's own, this extension just adds the //wait// method to the //Chain// class:
+
+<code javascript exec>
+var myChain = new Chain();
+var timestamp = function(){	
+	dbug.log(new Date);
+	myChain.callChain();
+};
+myChain.chain(timestamp).wait(1000).chain(timestamp);
+myChain.callChain();
+//logs the current time, waits 1 second, logs again
+</code>
+
+But in classes that use the //Chain// class (like //Fx.Tween//) it allows you to introduce pauses easily:
+
+<code javascript exec>
+new Fx.Tween('fxTarget', {
+	link: 'chain',
+	property: 'height'
+}).start(0).wait(500).start(100);
+//resize to 0px high, wait half a second, size back to 100
+</code>
+
+===== Element.pauseFx =====
+Because I want to use the //Element.tween// and //Element.morph// shortcuts, I need to be able to send this delay instruction on the element, so we have //Element.pauseFx//.
+
+This method by default delays the tween method, but you can specify one (like "morph" or "reveal") if you want to delay something else.
+
+<code javascript exec>
+document.id('fxTarget').tween('height', 0).pauseFx(500).tween('height', 100);
+</code>
+
+
+<code javascript exec>
+document.id('fxTarget').morph({
+	height: 0, width: 0
+}).pauseFx(500, 'morph').morph({
+	height: 100, width: 100
+});
+</code>

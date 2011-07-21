@@ -1,0 +1,75 @@
+====== IframeShim ======
+[[http://www.clientcide.com/docs/Browser/IframeShim|docs]]
+
+CSS provides a way to position elements on top of another with the z-index setting. If you've ever tried to position an element above a select input or some flash objects in IE 6 and below, you've no doubt discovered that you can't give it a high enough z-index no matter what you try (also, Firefox on the Mac has an issue with scroll bars, so this fixes that, too).
+
+This is because select inputs are drawn by the operating system, not the browser (which is why they look different in OSX vs. Windows vs. Linux), and in IE you can't position anything above it because it's kinda being drawn above the browser.
+
+Luckily there's a solution. Iframes are //also// drawn by the OS, and quirky as it seems, you //can// position them with z-index. Go figure.
+
+So an iframe shim is when you position your element on the page over a select list and then you position an empty, transparent iframe between your element and the document below it. You conform the iframe's dimensions to your element and now you can partially obscure a select list or a flash element. [[http://www.macridesweb.com/oltest/IframeShim.html|More on iframe shims here]].
+
+Enough with the explanations, here's an example **Again, IE -6 only**:
+
+<html><br><div id="dragExample" class="fxTarget" style="visibility: visible; z-index: 10"></div>
+<select id="iframeShimSelectExample"><option>example select input</option></select>
+<script>document.id('dragExample').makeDraggable()</script>
+<br style="clear:both"/><br><br><br><br><br>
+</html>
+
+Drag the box over the select list.
+
+It will look like this in IE (this is just a screenshot):
+
+<html><img src="http://www.clientcide.com/wiki/_media/clientcide-libraries/iframeshim.gif?cache=cache&w=242&h=158" style="border: 1px solid #000"><br style="clear:both"/></html>
+
+Ok, let's fix it:
+
+<html><script>var myFloatingDivShim = null;</script></html>
+<code javascript exec>
+/*I've already declared myFloatingDivShim*/
+ myFloatingDivShim = new IframeShim(document.id('dragExample'), {
+   display: true,/*show it now*/
+   name: 'myFloatingDivShimId'
+});
+</code>
+
+If you want to see the iframe:
+<code javascript exec>
+/*note, this will produce an error in anything but ie6, because the iframe isn't in the DOM*/
+document.id('myFloatingDivShimId').setStyle('border', '2px solid #333');
+</code>
+
+IframeShim has //.hide()// and //.show()// functions that will make the iframe appear. It's important to note that if the iframe is displayed that anything under it won't be clickable, so if the element you are shimming moves or is removed, you have to call //.show()// to re-position the shim and //.hide()// to remove it from view.
+
+In the example above, we need to make the onDrag event reposition our shim, so:
+
+<code javascript exec>
+/* remove the shim if it's already there */
+try{myFloatingDivShim.remove()}catch(e){}
+
+myFloatingDivShim = new IframeShim(document.id('dragExample'), {
+   name: 'myFloatingDivShimId'
+});
+document.id('dragExample').makeDraggable({
+ onDrag: myFloatingDivShim.show.bind(myFloatingDivShim)
+});
+
+/* put a border on it so you can see it */
+document.id(myFloatingDivShim.id).setStyle('border', '2px solid #333');
+</code>
+
+Now as the user drags the element around, the iframe will follow.
+
+*Note*: by default, IframeShim only activates for ie6 and Firefox for the mac. This means if you create a new Iframeshim and you view your page in something other than IE6, nothing will happen. Your code can still refer to the instance of the class and its methods, but the iframe won't even be added to the DOM. You can override this to make the iframe show up for other browsers with the *browsers* option:
+
+<code javascript exec>
+new IframeShim(document.id('fxTarget'), {
+	browsers: window.ie6 || window.gecko,
+  display: true/*show it now*/
+}).shim.setStyle('border','1px solid black');
+</code>
+
+This example will create the iframe for both Firefox (gecko) based browsers (on all OSes) and ie6, but nothing else. Note that the iframe does get created, so you can refer to it without having to worry about it not being there in browsers you aren't going to use it in. In the example above, I style the border of the shim. If you view this in Safari, the iframe isn't in the DOM, but it's still part of the class and you can refer to it without having to worry about what browser you are in. 
+
+You can turn it on for all browsers by specifying *browsers: true* or *browsers: 'all'*

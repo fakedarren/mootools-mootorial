@@ -1,0 +1,36 @@
+====== A MooTools Tutorial :: The "Mootorial" ======
+
+What follows is a how-to tutorial on the MooTools library and also serves as a unit test of sorts. Most of the code examples will allow you execute them by clicking on the "execute this code" link below the example. Clicking this will echo out the code and the result in the [[http://getfirebug.com|Firebug]] debugging plugin for [[http://getfirefox.com|Firefox]]. If you don't have that plugin or Firefox, a similar console should be visible at the bottom of the page. This is a poor substitute for Firebug, so I highly recommend installing both [[http://getfirefox.com|Firefox]] and [[http://getfirebug.com|Firebug]] when viewing this tutorial.
+
+I've organized these pages the same way the MooTools libraries are organized. **__You can use the menu on the left to jump around from section to section__**. If you're new to MooTools I highly recommend that you start at the top and work your way down in that order.
+
+
+
+
+===== MooTools Version 1.2 =====
+
+MooTools version 1.2 is now released. This tutorial is quite specifically written for this version.
+
+
+
+===== To Err is Human, Thus, The Wiki =====
+
+I authored the first draft of the [[http://docs.mootools.net|documentation for MooTools]] and anyone who read it will tell you that it had its share of typos and flat out errors. I wrote the docs by just reading Valerio's source code and writing down what it appeared to do. Sometimes I get it wrong.
+
+
+
+I wrote this tutorial in much the same way, and it's likely to have the same kinds of issues (though hopefully not many). This is a wiki, which means that YOU can help me fix any problems that you find. If you //think// something is off, but aren't **positive**, then [[http://www.clientcide.com/shout-out/|email me]] what you think should change. If, on the other hand, you spot a typo or something that you know is incorrect, then dive in.
+
+
+
+===== Credits =====
+
+
+
+writing credits: [[http://www.clientcide.com|Aaron Newton]]
+
+(but it's a wiki, so others, even YOU, can contribute!)
+
+
+
+MooTools is the brainchild of [[http://mad4milk.net|Valerio Proietti]]

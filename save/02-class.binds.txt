@@ -1,0 +1,147 @@
+====== Class.Binds ======
+
+[[http://www.clientcide.com/docs/Class.Extras/Class.Binds|docs]]
+
+A common pattern when writing classes in MooTools is to add events to elements or iterate over values. Often this requires you to bind the methods used to the instance of the class with //[[http://www.mootorial.com/wiki/mootorial/03-native/01-function#function.bind|function.bind]]//. Consider this example:
+
+<code javascript>
+var LinkAlert = new Class({
+	initialize: function(links){
+		this.links = $$(links);
+		this.links.each(this.setupLink, this);
+	},
+	setupLink: function(link) {
+		link.addEvent('click', function(){
+			this.alert(link);
+		}.bind(this));
+	},
+	alert: function(link){
+		alert(this.prefix + link.get('href'));
+	},
+	prefix: "The link you clicked goes to "
+});
+</code>
+
+This class takes the links you pass it, adds a click event to each and, when the link is clicked, calls it's //alert// method to tell the user that they clicked the link. Kinda pointless, I know. What I'm trying to illustrate are two very common forms of binding.
+
+The first //bind// is in the //initialize// method, which passes each link to the method //setupLink//. Because //setupLink// references //this// we must bind it (which is the second argument that //Array.each// takes):
+
+<code javascript>
+	$$(links).each(this.setupLink, this);
+</code>
+
+The other common binding pattern is when you add an event to an //Element// or a //Class//. You specify the action (click) and the method to execute when the event is fired (in this case, the //alert// method). Again, we must bind //this// to the method, but because //addEvent// doesn't take a second argument for binding (like //Array.each// does) we must use the //Function.bind// method.
+
+<code javascript>
+	link.addEvent('click', function(){
+		this.alert(link);
+	}.bind(this));
+</code>
+
+===== Removing Events =====
+Finally, the last pattern I want to illustrate comes when you want to remove an event. Let's say we want to take our class and have a method to make it stop monitoring our links. There are numerous ways to write this, but let's say we want to remove the events. Because //Function.bind// returns a //copy// of the function, we must keep a reference to that new method:
+
+<code javascript>
+var LinkAlert = new Class({
+	initialize: function(links){
+		this.links = $$(links);
+		this.links.each(this.setupLink, this);
+		this.boundAlert = this.alert.bind(this);
+	},
+	setupLink: function(link) {
+		link.addEvent('click', this.boundAlert);
+	},
+	alert: function(link){
+		alert(this.prefix + link.get('href'));
+	},
+	prefix: "The link you clicked goes to ",
+	stopListening: function(){
+		this.links.each(function(link) {
+			link.removeEvent('click', this.boundAlert);
+		}, this);
+	}
+});
+</code>
+
+By keeping a reference to the version of //this.alert// that's been bound to //this//, we are able to remove it. What we couldn't do is this:
+
+<code javascript>
+link.removeEvent('click', this.alert.bind(this));
+</code>
+
+Because //Function.bind// returns a copy of //this.alert//, which isn't the same thing when you do it again - it's another copy.
+
+===== Class.Binds =====
+This script, //Class.Binds// lets you specify methods in your class that should be bound automatically to the instance. Just pass an array of the methods that need this treatment and you no longer have to bind //this// to them when you reference them. This would yield:
+
+<code javascript>
+var LinkAlert = new Class({
+	Implements: Class.Binds,
+	Binds: ["alert", "setupLink"],
+	initialize: function(links){
+		this.links = $$(links);
+		this.links.each(this.setupLink);
+	},
+	setupLink: function(link) {
+		link.addEvent('click', this.alert);
+	},
+	alert: function(link){
+		alert(this.prefix + link.get('href'));
+	},
+	prefix: "The link you clicked goes to ",
+	stopListening: function(){
+		this.links.each(function(link) {
+			link.removeEvent('click', this.alert);
+		}, this);
+	}
+});
+</code>
+
+Also note that the binds property can be a single string if you're only binding one method:
+
+<code javascript>
+var Foo = new Class({
+	Implements: Class.Binds,
+	Binds: 'foo',
+	initialize: function(){
+		this.bindMethods(); //this.binds will be used by default
+	}
+	foo: function(){...},
+	bar: function(){...}
+})
+</code>
+
+This is a Class mutator, so you don't need to do anything to use it other than include the script and then define //Binds// properties for your classes.
+
+NOTE: Binds has limitations when applied over many objects which extend each other. Specifically, when you declare your bound functions you overwrite the state in the parent class. The solution is to re-declare the bound functions in the child class. This is obviously not ideal. In such cases you may not want to use Binds.
+
+For example:
+<code javascript>
+var Foo = new Class({
+	Binds: ['foo'],
+	initialize: function(){
+		this.foo.delay(1); //foo is already bound to "this"
+	},
+	msg: 'foo!',
+	foo: function(){
+		//"this" is our instance of this class
+		//because the foo method was passed to Binds
+		alert(this.msg);
+	}
+});
+var Bar = new Class({
+	Extends: Foo,
+	Binds: ['bar'],
+	initialize: function() {
+		//this will break because the foo method is no longer
+		//bound to this instance because the Binds list doesn't include it.
+	        document.id("some_button").addEvent("foo", this.foo);
+	},
+	bar: function() {
+	        // works correctly
+	        this.foo();
+	}
+});
+</code>
+
+When the button is pressed, even though Foo::foo was bound using Binds in the Foo class, since you added the event using the Bar class, Foo::foo will be bound to the button, not the Bar class. The only known workaround for this is to add to the Bar class all of the methods in the extended class's Bind.

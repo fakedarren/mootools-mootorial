@@ -1,0 +1,29 @@
+====== Fupdate.Append ======
+
+[[http://www.clientcide.com/docs/Forms/Fupdate.Append|docs]]
+
+This class picks up where [[05.1-fupdate|Fupdate]] leaves off and does pretty much the same thing. The only difference is that the result, instead of overwriting it, is injected into (or before, after, top, etc) it.
+
+<html>
+<form action="/wiki/simple.html.php" id="fupdateForm">
+	<input type="text" name="message" title="enter some text here" class="OverTxt">
+	<input type="submit">
+</form>
+<ul id="fupdateReply">
+	<li>I'm a list item that will be pushed down (but not replaced) when you submit the form above</li>
+</ul>
+<script>
+	window.addEvent('domready', function(){
+		new OverText($$('input.OverTxt'));
+	});
+</script>
+</html>
+
+<code javascript exec>
+new Fupdate.Append(document.id('fupdateForm'), document.id('fupdateReply'), {
+	inject: 'top'
+});
+</code>
+
+...and that's pretty much all you gotta do.
+

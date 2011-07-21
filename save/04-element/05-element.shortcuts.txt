@@ -1,0 +1,56 @@
+====== Element.Shortcuts ======
+[[http://www.clientcide.com/docs/Element/Element.Shortcuts|docs]]
+
+MooTools has a lot of love for DOM elements, but there were a few functions we included that aren't in MooTools. In this script we mostly cover things that are shortcuts for stuff we got tired of typing over and over.
+
+===== Element.isVisible =====
+Returns true if display != none.
+
+<code javascript exec>
+document.id('fxTarget').isVisible(); //true
+</code>
+
+===== Element.toggle =====
+Toggles between display = block and display = none.
+
+<code javascript exec>
+document.id('fxTarget').toggle(); //hides
+document.id('fxTarget').toggle.delay(1000, document.id('fxTarget')); //shows again
+</code>
+
+
+
+===== Element.hide(), .show =====
+//Element.hide()// will set an element's display to 'none'.
+
+//Element.show()// will set it back to what it was before you hid it (inline, block, etc.) or, if you didn't call //.hide()// on it previously it defaults to 'block'. You can specify what to set the display to by passing that in (//Element.show('block')// or //Element.show('inline')//);
+
+These are just shortcuts for //[[http://www.mootorial.com/wiki/mootorial/04-element/02-element.style#element.getstyle-.setstyle-.setstyles|Element.setStyle('display', 'block')]]//.
+
+<code javascript exec>
+document.id('fxTarget').hide(); /*hides*/
+document.id('fxTarget').show.delay(1000, document.id('fxTarget')); /*shows again*/
+</code>
+
+
+===== Element.swapClass =====
+This basically removes one class and inserts another. Useful if you need to toggle a specific class of styles.
+If the one to remove is not found the one to add is still added.
+
+<html>
+<style>
+div.red {
+	border: 1px solid #600;
+	background-color: #fcc;
+}
+div.blue {
+	border: 1px solid #006;
+	background-color: #ccf;
+}
+</style>
+<div id="swapExample" class="red" style="height: 3px"></div>
+</html>
+
+<code javascript exec>
+document.id('swapExample').swapClass('red', 'blue'); 
+</code>

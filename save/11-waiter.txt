@@ -1,0 +1,146 @@
+====== Waiter ======
+
+[[http://www.clientcide.com/docs/UI/Waiter|docs]]
+
+The //Waiter// class automates the little spinning Ajax indicator functionality that users expect when something on the page is being processed. It greys out the area being updated and makes it un-clickable until the update completes (or it fails).
+
+Here's an example of //Waiter// doing it's thing:
+
+The html I'm using:
+<code html>
+<div id="waiterExample" style="width: 400px; height: 100px;border: 1px solid black; background: #ccc;">
+I'm a div with some stuff in it...
+</div>
+</code>
+
+<html>
+<div id="waiterExample" style="width: 400px; height: 100px;border: 1px solid black; background: #eee;">
+I'm a div with some stuff in it...
+</div>
+</html>
+
+
+<code javascript exec>
+var waiterExample = new Waiter(document.id('waiterExample'));
+waiterExample.start();
+waiterExample.stop.delay(2000, waiterExample); //hide after 2 sec
+</code>
+
+
+
+
+
+===== Options =====
+//Waiter// has a few options, most to do with the display of the layer. You can pass in styles for the spinner image, styles for the opacity layer, and options for the opacity effect (see //Fx.Styles//).
+
+Here are the options:
+
+<html>
+<ul>
+<li>baseHref - (<em>string</em>) url prefix for the img src (see below); defaults to <em>'http://www.cnet.com/html/rb/assets/global/waiter/'</em>
+</li>
+<li>img - (<em>object</em> or <em>false</em>) options for the image (see below); if set to <em>false</em> no image will be injected.</li>
+
+<li>containerPosition - (<em>object</em>) options passed to <a href="/docs/Element/Element.Position#Element:setPosition">Element:setPosition</a> for the container of the message; relativeTo is set to the target above automatically (but can be overwritten).</li>
+<li>containerProps - (<em>object</em>) attributes for the container div that contains the (optional) message and the image</li>
+<li>msg - (<em>mixed</em>, optional) message placed above the spinner image (as in "Please wait..."). Can be a <em>string</em> or an <em>element</em>.</li>
+
+<li>msgProps - (<em>object</em>) attributes for the container of the (optional) message</li>
+<li>layer - (<em>object</em>) options for the overlay layer (see below)</li>
+<li>fxOptions - (<em>object</em>) options passed to the effects used to transition the overlay and the image opacity</li>
+<li>useIframeShim - (<em>boolean</em>) <em>true</em>: an <a href="/docs/Browser/IframeShim">IframeShim</a> will be used underneath the modal layer; <em>false</em>: no shim is used; defaults to <em>true</em>
+
+</li>
+<li>iframeShimOptions - (<em>object</em>) options passed to <a href="/docs/Browser/IframeShim">IframeShim</a>
+</li>
+</ul>
+</html>
+
+<code javascript>
+	baseHref: 'http://www.cnet.com/html/rb/assets/global/waiter/',
+	containerProps: {
+		styles: {
+			position: 'absolute',
+			'text-align': 'center'
+		},
+		'class':'waiterContainer'
+	},
+	containerPosition: {},
+	msg: false,
+	msgProps: {
+		styles: {
+			'text-align': 'center',
+			fontWeight: 'bold'
+		},
+		'class':'waiterMsg'
+	},
+	img: {
+		src: 'waiter.gif',
+		styles: {
+			width: 24,
+			height: 24
+		},
+		'class':'waiterImg'
+	},
+	layer:{
+		styles: {
+			width: 0,
+			height: 0,
+			position: 'absolute',
+			zIndex: 999,
+			display: 'none',
+			opacity: 0.9,
+			background: '#fff'
+		},
+		'class': 'waitingDiv'
+	},
+	useIframeShim: true,
+	fxOptions: {}
+</code>
+
+You can get the default spinner image by downloading our assets for your own server. See: [[clientcide-libraries:00a-assets|External Assets]]
+
+
+
+===== Element.wait / .release =====
+
+Additionally, there are two shortcuts on the Element class that let you quickly display a *Waiter*. *Element.wait* turns it on and *Element.release* turns the waiter off.
+
+<html>
+<div id="waiterExample2" style="width: 400px; height: 100px;border: 1px solid black; background: #eee;">
+I'm a div with some stuff in it...
+</div>
+</html>
+<code javascript exec>
+document.id('waiterExample2').wait();
+
+(function(){
+	document.id('waiterExample2').release();
+}).delay(1000);
+</code>
+
+You can pass options along to these two methods - see the docs.
+
+===== Ajax Integration =====
+If you're using the //[[http://www.mootorial.com/wiki/mootorial/07-request/01-request.html|Request.HTML]]// class to update content on a page and you have //Waiter.js// included in your environment, you can just set a new option to use a //Waiter// automatically on the content area being updated:
+
+<html>
+<div id="ajaxWaiterExample" style="width: 400px; height: 100px;border: 1px solid black; background: #eee;">
+I'm a div with some stuff in it that will update when you execute the code below.
+</div>
+</html>
+
+
+<code javascript exec>
+new Request.HTML({
+	url: '/Ajax.Request.Example.html',
+  update: document.id('ajaxWaiterExample'),
+  /* useWaiter will automatically mask out document.id('ajaxWaiterExample') */
+  useWaiter: true,
+  /* waiterOptions is the options object for the Waiter class */
+  waiterOptions: {
+    fxOptions: {duration: 500}
+  }
+}).send();
+</code>
+

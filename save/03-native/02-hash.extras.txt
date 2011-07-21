@@ -1,0 +1,77 @@
+====== Hash.Extras ======
+[[http://www.clientcide.com/docs/Native/Hash.Extras|docs]]
+
+The [[http://www.mootorial.com/wiki/mootorial/03-native/04-hash|MooTools Hash]] is pretty powerful and complete and for the most part we wouldn't have much to add to it. We do however have two methods that we use occassionally.
+
+===== getFromPath =====
+This method returns a value from an object given a path to it (a string). Example:
+
+<code javascript exec>$H({
+    food: {
+        fruits: {
+            apples: "red",
+            lemon: "yellow"
+        }
+    }
+}).getFromPath("food.fruits.apples");
+//returns "red"</code>
+
+
+===== cleanValues ======
+
+This method just removes any keys from the hash whose values are //undefined// or //null//. You can actually define your own logic by passing in your own method. By default, it uses //[[http://www.mootorial.com/wiki/mootorial/01-core#defined|$defined]]//. 
+
+<code javascript exec>
+var myHash = $H({
+	foo: 'bar',
+	something: 'else',
+	missing: null
+});
+myHash.cleanValues();
+console.log(myHash.getKeys());
+</code>
+
+Here I define what to clean as any integer value that is negative:
+
+<code javascript exec>
+var myHash = $H({
+	a: -1,
+	b: 2,
+	c: 0,
+	d: -5
+});
+myHash.cleanValues(function(value){
+	if ($type(value) != "number") return true;
+	return value >= 0;
+});
+console.log(myHash.getKeys());
+</code>
+
+===== run =====
+
+This method will execute any value in the hash that is a function. Any arguments passed to //run// will be passed to each method in the hash. I use this to hold all my page initialization methods. For example:
+
+<code javascript>
+var MySite = {
+	init: new Hash({
+		setupSearch: function(){
+			//set stuff up
+		},
+		setupMenu: function(){
+			//set up menu stuff
+		},
+		pingGoogleAnalytics: function(){
+			//ping google
+		},
+		etc...
+	})
+};
+
+window.addEvent('domready', MySite.init.run.bind(MySite.init));
+//same as
+window.addEvent('domready', function(){
+	MySite.init.run();
+});
+</code>
+
+This way my startup code can grow without me having to go manage both a list of functions and a startup method that calls them all. I just add a new member to the hash and it automatically gets included win the whole has is run.

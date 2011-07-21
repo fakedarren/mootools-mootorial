@@ -1,0 +1,29 @@
+====== Element.Pin ======
+[[http://www.clientcide.com/docs/Element/Element.Pin|docs]]
+
+//Element.pin// affixes an element to its current location, setting its css position value to "fixed" so that the element will not move if you scroll the window. This works for draggable elements, too. Browsers that don't support position "fixed" get the element relocated on scroll, so it appears to behave the same (though it may be a little jittery - this is mostly just ie6).
+
+
+<code javascript exec>
+document.id('fxTarget').pin()
+</code>
+
+You can also easily unpin an element:
+
+<code javascript exec>
+document.id('fxTarget').pin()
+/*scroll around a little and in 4 secs it'll go back to being unpinned*/
+document.id('fxTarget').unpin.delay(4000, document.id('fxTarget'));
+</code>
+
+And you can toggle it:
+
+<code javascript exec>
+document.id('fxTarget').pin()
+document.id('fxTarget').togglepin.delay(1000, document.id('fxTarget'));
+document.id('fxTarget').togglepin.delay(2000, document.id('fxTarget'));
+document.id('fxTarget').togglepin.delay(3000, document.id('fxTarget'));
+//etc.
+</code>
+
+<html><div style="height: 800px"></div></html>

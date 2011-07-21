@@ -1,0 +1,100 @@
+====== Element.MouseOvers ======
+
+[[http://www.clientcide.com/docs/Element/Element.MouseOvers|docs]]
+
+This script contains an Element function for handling mousing over things.
+
+===== Element.autoMouseOvers =====
+
+We've all written javascript a million times to let a user mouse over an image and see a highlight. When I see it, it usually looks like this:
+
+<code html>
+<img src="myImg_off.gif" onmouseover="this.src='myImg_on.gif'"
+ onmouseout="this.src='myImg_off.gif'">
+</code>
+
+And while that works just fine, I got tired of writing it (and, for that matter, seeing other people write it). Now it looks like this:
+
+<code html>
+<img src="myImg_off.gif" class="autoMouseOver">
+<script>
+$$('img.autoMouseOver').autoMouseOvers();
+</script>
+</code>
+
+In action:
+
+<html><img src="http://i.i.com.com/cnwk.1d/i/hdft/search_go_off.gif" width="32" height="20" onload="this.autoMouseOvers({
+	outString: '_off',
+	overString: '_on'
+})"></html>
+
+Ahhhhh. Much better.
+
+The method can take numerous arguments, including what the "_on" and "_off" strings are, as well as the ability to apply css classes to things when they are hovered.
+<code javascript>
+$$('img.autoMouseOver').autoMouseOvers({
+	outString: '_off', 
+	overString: '_on',
+});
+</code>
+
+This will find all elements that match the selector (//img.autoMouseOver//) and when the user mouses over the image, it will replace any instance of "_off" in the src of the image with "_on". When they mouse out, it will put "_off" back.
+
+This means you can choose a naming convention ("myImg_on", "myImg_off") for your mouseovers, choose a class (like "autoMouseOver") and then just give the class to your image and you're done writing javascript for this very common action.
+
+
+
+
+
+==== Using with CSS Classes ====
+The //autoMouseOvers// method also allows for the toggling of classnames. This will swap out one css class for another when the user mouses over a dom element. You also have the option of having the class of the DOM element change when the user mouses over a child of the DOM element that's supposed to toggle (for instance, if you you have a tab with a link in it, you can have the tab change when the user mouses over the anchor instead of the whole tab).
+
+Pass in the css class for the 'on' and 'off' states, as well as the css selector for the DOM element, and, optionally, the selector for the sub elements for the mouseover action.
+
+You can also optionally set applyToBoth to set the mouseover class to both the selector and the subselector if you like.
+
+<html>
+<style>
+/*
+#tabSwapperExample .on {
+  background-color: #f88d18 !important;
+}
+#tabSwapperExample .on a {
+  color: #fff!important;
+}
+#tabSwapperExample .off {
+  background-color: #ddd!important;
+}
+#tabSwapperExample .off a {
+  color: #000!important;
+}
+#tabSwapperExample li {
+  padding: 0px 20px 0px 20px !important;
+  float: left;
+  background-image: none !important;
+  margin: 5px;
+  text-align: center;
+  list-style: none !important;
+}*/
+
+</style>
+
+<ul id="tabSwapperExample" class="tabSet">
+  <li class="off"><a>first</a></li>
+  <li class="off"><a>second</a></li>
+  <li class="off"><a>third</a></li>
+</ul>
+<br style="clear:both">
+</html>
+
+<code javascript exec>
+$$('#tabSwapperExample li').autoMouseOvers({
+	cssOver: 'on', 
+	cssOut: 'off', 
+	subSelector: 'a', 
+	applyToBoth: false
+});
+</code>
+
+After you execute the code block above, mouse over the items and you'll see their classes change.

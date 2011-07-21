@@ -1,0 +1,276 @@
+====== Date ======
+
+[[http://www.clientcide.com/docs/Native/Date|docs]]
+
+The native //Date// object in javascript leaves a lot to be desired, and while MooTools 1.2 doesn't extend it, the content of this library that does will likely make its way into MooTools in the near future.
+
+
+Here are the methods that are available in //date.js//; be sure to check out //date.extras.js// below, which adds a bit more functionality.
+
+===== Date.set and Date.get =====
+
+You can use the //set// and //get// methods to set or retrieve most properties of a date. These are: "Date", "Day", "FullYear", "Hours", "Milliseconds", "Minutes", "Month", "Seconds", "Time", "TimezoneOffset", "Week", "Timezone", "GMTOffset", "Ordinal", "DayOfYear", "LastMonth", "UTCDate", "UTCDay", "UTCFullYear", "AMPM", "UTCHours", "UTCMilliseconds", "UTCMinutes", "UTCMonth", "UTCSeconds". //get// is **not** case sensitive, so you can do //get('date')//.
+
+<code javascript exec>
+new Date().get('day');
+</code>
+<code javascript exec>
+new Date().get('month');
+</code>
+
+===== Date.clone =====
+Clones a date returning a copy of it:
+
+<code javascript exec>
+var now = new Date();
+var nowCopy = now.clone();
+console.log(now);
+console.log(nowCopy); //they are the same
+</code>
+
+
+===== Date.increment =====
+Increments a value in the date. Optional values are "year", "month", "week", "day", "hour", "minute", "second", and "ms".
+
+<code javascript exec>
+var now = new Date();
+var oneSecondLater = now.clone().increment('second');
+var thirtySecondsLater = now.clone().increment('second', 30);
+console.log(now);
+console.log(oneSecondLater);
+console.log(thirtySecondsLater);
+</code>
+
+<code javascript exec>
+var now = new Date();
+var nextMonth = now.clone().increment('month');
+var twoYears = now.clone().increment('year', 2);
+console.log(now);
+console.log(nextMonth);
+console.log(twoYears);
+</code>
+
+The default value is a day:
+
+<code javascript exec>
+var today = new Date();
+var tomorrow = today.clone().increment(); 
+console.log(today);
+console.log(tomorrow);
+//with no arguments, increment will move forward a day
+</code>
+
+**Note:** this method //will// account for the various numbers of days in each month and for leap years.
+
+
+===== Date.decrement =====
+Same as //Date.increment// except moving time backwards.
+
+<code javascript exec>
+var now = new Date();
+var oneSecondBefore = now.clone().decrement('second');
+var thirtySecondsBefore = now.clone().decrement('second', 30);
+console.log(now);
+console.log(oneSecondBefore);
+console.log(thirtySecondsBefore);
+</code>
+
+<code javascript exec>
+var now = new Date();
+var lastMonth = now.clone().decrement('month');
+var twoYearsAgo = now.clone().decrement('year', 2);
+console.log(now);
+console.log(lastMonth);
+console.log(twoYearsAgo);
+</code>
+
+The default value is a day:
+
+<code javascript exec>
+var today = new Date();
+var yesterday = today.clone().decrement(); 
+console.log(today);
+console.log(yesterday);
+//with no arguments, decrement will move backwards a day
+</code>
+
+===== Date.isLeapYear =====
+Returns true or false.
+
+<code javascript exec>
+new Date().isLeapYear(); //true if this is a leap year
+</code>
+
+===== Date.clearTime =====
+Sets all the time values to zero (12am exactly).
+
+<code javascript exec>
+new Date().clearTime();
+</code>
+
+
+===== Date.diff =====
+Compares two dates. If the date passed as an argument is in the future, the value is positive, else negative.
+
+//diff// takes as its second argument an optional resolution value. Resolution can be "year", "month", "week", "day", "hour", "minute", "second", and "ms". The default is "day". 
+
+<code javascript exec>
+var now = new Date();
+var tomorrow = now.clone().increment();
+console.log(now.diff(tomorrow)); /* 1; default resolution is "day" */
+console.log(tomorrow.diff(now)); /* -1 */
+</code>
+
+<code javascript exec>
+var now = new Date();
+var yearAndAMonthAgo = now.clone().decrement('month', 13);
+console.log(now.diff(yearAndAMonthAgo)); /* around -390 days, depending on month */
+console.log(now.diff(yearAndAMonthAgo, 'year')); /* 1 */
+console.log(now.diff(yearAndAMonthAgo, 'month')); /* 13 */
+</code>
+
+**Note:** All values are rounded down (so if you compare two dates that are 26 hours apart with a resolution of "day", you'll get one). When comparing years you'll get the numerical difference between the years, meaning that if you compare Jan 08 to Dec 09, which is 23 months, you'll still only get 1 as a result because 09 - 08 is 1.
+
+===== Date.getTimezone =====
+Returns the time zone string; e.g. "GMT".
+
+<code javascript exec>
+new Date().getTimezone();
+</code>
+
+===== Date.getGMTOffset =====
+Returns the offset of the time zone from GMT; e.g. "-0800".
+
+<code javascript exec>
+new Date().getGMTOffset();
+</code>
+
+
+
+===== Date.parse =====
+Parses a string, date, or number to a date using predefined regular expressions. //date.js// comes with only two of these defined (MM/DD/YYYY, where the / can be a period or a dash, and the other parser is exactly like the first except it adds time parsing: MM/DD/YYYY HH:MM[pm|am]). //date.extras.js// provides many more of these. See below for how to write your own. If the value fails to parse, returns //Date// with a value of "Invalid Date" (just as if you tried //new Date('foo')//).
+
+<code javascript exec>
+Date.parse("12/31/1999");
+</code>
+
+<code javascript exec>
+Date.parse("12/31/1999 11:59pm");
+</code>
+
+<code javascript exec>
+Date.parse("foo"); //Invalid Date
+</code>
+
+<code javascript exec>
+Date.parse(new Date()); //just returns the value of new Date()
+</code>
+
+<code javascript exec>
+var now = new Date();
+Date.parse(now); //just returns now
+</code>
+
+**Note:** //Date.parse// can be executed as a static method on the //Date// namespace (as above) and it will return a new //Date// instance with the parsed date to you. Alternatively, if you execute //Date.parse// on an instance of a date, you'll alter that instance to the parsed value:
+
+<code javascript exec>
+var partyTime = new Date();
+partyTime.parse("12.31.1999 11:59pm");
+console.log(partyTime);
+
+/* same as 
+var partyTime = new Date().parse("12.31.1999 11:59pm");
+or
+var partyTime = Date.parse("12.31.1999 11:59pm");
+*/
+</code>
+
+=== Writing your own parsers ===
+You can write your own regular expressions to parse formats you wish to support. To do this, you need to push your parser into the array of parsers that come with //date.js//. Here's what it looks like:
+
+<code javascript>
+//this pattern looks for a string beginning with 
+//"tod" or "Tod" and assumes that the user means
+//"today", and returns the current date
+Date.$parsePatterns.extend([{
+  re: /^tod/i,
+  handler: function() {
+    return new Date();
+  }
+},{
+//this one looks for "tom" or "Tom"
+//and assumes the user means tomorrow
+  re: /^tom/i,
+  handler: function() {
+    return new Date().increment();
+  }
+},{
+  //"12.31.08", "12-31-08", "12/31/08", "12.31.2008",
+  //"12-31-2008", "12/31/2008"
+  re: /^(\d{1,2})[\.\-\/](\d{1,2})[\.\-\/](\d{2,4})$/,
+  handler: function(bits){
+    var d = new Date();
+    d.setYear(bits[3]);
+    d.setMonth(bits[1].toInt() - 1, bits[2].toInt());
+    return Date.fixY2K(d);
+  }
+}]);
+</code>
+
+For each parser you add, you define an object with //re// and //handler//. //re// is the regular expression applied to the date value being parsed. //handler// receives as its arguments the result of that regular expression and should create a date and return it.
+
+
+
+
+===== Date.format =====
+Yeah! A date formatter for javascript! It's pretty standard stuff, though it's not as full featured as other languages.
+
+<html>
+<ul>
+	<li><b>a</b> - short day ("Mon", "Tue")</li>
+	<li><b>A</b> - full day ("Monday")</li>
+	<li><b>b</b> - short month ("Jan", "Feb")</li>
+	<li><b>B</b> - full month ("Janurary")</li>
+	<li><b>c</b> - the full date to string ("Mon Dec 10 2007 14:35:42 GMT-0800 (Pacific Standard Time)"; same as .toString() method.</li>
+	<li><b>d</b> - the date to two digits (01, 05, etc)</li>
+	<li><b>H</b> - the hour to two digits in military time (24 hr mode) (01, 11, 14, etc)</li>
+	<li><b>I</b> - the hour in 12 hour time (01, 11, 2, etc)</li>
+	<li><b>j</b> - the day of the year to three digits (001 is Jan 1st)</li>
+	<li><b>m</b> - the numerical month to two digits (01 is Jan, 12 is Dec)</li>
+	<li><b>M</b> - the minuts to two digits (01, 40, 59)</li>
+	<li><b>p</b> - 'AM' or 'PM'</li>
+	<li><b>S</b> - the seconds to two digits (01, 40, 59)</li>
+	<li><b>U</b> - the week to two digits (01 is the week of Jan 1, 52 is the week of Dec 31)</li>
+	<li><b>W</b> - not yet supported</li>
+	<li><b>w</b> - the numerical day of the week, one digit (0 is Sunday, 1 is Monday)</li>
+	<li><b>x</b> - returns the format %m/%d/%Y (12/10/2007)</li>
+	<li><b>X</b> - returns %I:%M%p (02:45PM)</li>
+	<li><b>y</b> - the short year (to digits; "07")</li>
+	<li><b>Y</b> - the four digit year</li>
+	<li><b>T</b> - the GMT offset ("-0800")</li>
+	<li><b>Z</b> - the time zone ("GMT")</li>
+	<li><b>%</b> - returns % (example: %y%% = 07%)</li>
+</ul>
+</html>
+There are some shortcuts, too (these don't use the percent signs; see example below):
+<html>
+<ul>
+	<li><b>db</b> - "%Y-%m-%d %H:%M:%S"</li>
+	<li><b>compact</b> - "%Y%m%dT%H%M%S"</li>
+	<li><b>iso8601</b> - "%Y-%m-%dT%H:%M:%S%T"</li>
+	<li><b>rfc822</b> - "%a, %d %b %Y %H:%M:%S %Z"</li>
+	<li><b>short</b> - "%d %b %H:%M"</li>
+	<li><b>long</b> - "%B %d, %Y %H:%M"</li>
+</ul>
+</html>
+
+Example:
+
+<code javascript exec>
+var today = new Date();
+console.log(today.format("%x")); /* 12/31/1999 */
+console.log(today.format("%x %X")); /* 12/31/1999 11:59pm */
+console.log(today.format("db")); /* 1999-12-31 23:59:59 */
+</code>
+
+**Note**: it's a good idea to write parsers for any inputs that you output data in a given format. If you show the user a date format on your page, any inputs on that page that accept dates should be able to parse that format.

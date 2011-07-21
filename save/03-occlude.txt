@@ -1,0 +1,50 @@
+====== Occlude ======
+
+[[http://www.clientcide.com/docs/Class.Extras/Occlude|docs]]
+
+A large percentage of the code we write for the browser is to enhance the behavior of some DOM element. Validate a form, allow a div to be dragged, zoom an image, etc. When I write code that enhances a DOM element I prefer to ensure that the element doesn't get the same class applied to it twice. Consider an input that has a [[clientcide-libraries:09-forms:02-datepicker|date picker]] associated with it. Whent he user shifts focus into the input, we show the date picker. But if somehow our code gets applied to that input twice, we'll show two date pickers. This can have even worse effects when you are transforming the shape or location of the element.
+
+Enter **Occlude**, which just ensures that your class is only applied once. It also makes it possible to find the instance of the class from the DOM element using [[http://www.mootorial.com/wiki/mootorial/04-element/00-element#element-storage|Element Storage]].
+
+===== Usage =====
+
+First, you must include the //Occlude// class in your //Implements// statement. Secondly, you must tell //Occlude// what the property you want your class to be referenced by in //Element.Storage// (this is the key that the DOM element will store the instance of the class on - so if you have a date picker associated with an input, you might use the property 'DatePickerInstance'). Finally, you must tell //Occlude// on which DOM element to store this property if it's not there already.
+
+When you call the //occlude// method, it will return //false// if the DOM element doesn't already have an instance bound to it. If it returns true, you should return the value assigned to //this.occludes//. This value is the instance that was found already.
+
+<code javascript>
+var Widget = new Class({
+	Implements: [Class.Occlude],
+	initialize: function(element) {
+		this.element = document.id(element);
+		if (this.occlude('widget', element)) return this.occluded;
+	}
+})
+</code>
+
+===== Breaking it down a bit =====
+
+What this class does is look to see if the property you give it is already defined. If so, you should return that property (which gets assigned to //this.occluded//). This means that the following will prevent your DOM element form getting more than one class assigned to it:
+
+<code javascript>
+var widget1 = new Widget(document.id('widgetDiv'));
+var widget2 = new Widget(document.id('widgetDiv'));
+//widget1 == widget 2 - only one is applied to document.id('widgetDiv')
+</code>
+
+===== Shorthand Syntax =====
+
+The intended usage of the //Occlude// class uses two shorthands. The first is to define //this.element// as the DOM element you want to bind the class to and the second one has you define a //property// property:
+
+<code javascript>
+var Widget = new Class({
+	Implements: [Class.Occlude],
+	property: 'widgetInstance',
+	initialize: function(element) {
+		this.element = document.id(element);
+		if (this.occlude()) return this.occluded;
+	}
+});
+</code>
+
+When you define a property and assign the element to //this.element//, you don't need to pass any arguments to //this.occlude//.

@@ -1,0 +1,70 @@
+====== String.Extras ======
+
+[[http://www.clientcide.com/docs/Native/String.Extras|docs]]
+
+MooTools extends Strings in its Native group of code. We've got a few more extensions of our own.
+
+[[http://www.clientcide.com/docs/Native/String.Extras|docs]]
+
+
+
+
+
+
+==== stripTags ====
+Removes all html tags from a string:
+
+<code javascript exec>
+"<p>I\'m a <b>string</b> with a bunch of <i>tags</i></p>".stripTags();
+//returns: I'm a string with a bunch of tags
+</code>
+
+==== cleanQueryString ====
+Removes from a query string any keys that have empty values.
+
+<code javascript exec>
+var cleaned = "a=b&x=&z=123&e=".cleanQueryString();
+//cleaned = "a=b&z=123"
+</code>
+
+You can pass in a custom function to use instead of the default:
+
+<code javascript exec>
+var noNumberValues = "a=b&x=y&z=123&e=".cleanQueryString(function(set){
+    //set is "a=b", "x=y", "z=123", "e="
+    return !set.split("=")[1].match(/[0-9]/);
+});
+//noNumberValues = "a=b&x=y&e="
+</code>
+
+
+==== findAllEmails ====
+
+Finds all the valid email addresses in a string.
+
+<code javascript exec>
+"Fred's email is fred@flintstone.com and Barney's is barney@rubble.com".findAllEmails();
+//returns ['fred@flintstone.com', 'barney@rubble.com']
+</code>
+
+
+
+==== parseQuery ====
+This takes a url query string and returns an object of name/value pairs to you.
+
+<code javascript exec>
+"apple=red&lemon=yellow".parseQuery();
+//returns: {apple: 'red', lemon:'yellow'}
+</code>
+
+
+
+
+
+==== tidy ====
+Removes MS-Word style non-ASCI characters (curly quotes, elipse, etc). See also [[element.cnet.js#tidy|Element.tidy]].
+
+<code javascript exec>
+"“‘…’”".tidy();
+//returns "'...'"
+</code>

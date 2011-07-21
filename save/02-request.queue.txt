@@ -1,0 +1,32 @@
+====== Request.Queue ======
+
+[[http://www.clientcide.com/docs/Request/Request.Queue|docs]]
+
+The MooTools //Request// class gives us the option to link together requests so that with a single instance of the class, if you've got a request that's running you can 'stack up' any new send requests so that they occur one after the other.
+
+This is convenient, but what if you have numerous instances of //Request// or its subclasses (like //Request.HTML//) and you want to only have one request running at a time? Or only two?
+
+That's basically all that Request.Queue does. It lets you register any number of instances of //Request// or its subclasses with an instance of Request.Queue and then write your code like normal. All requests to server will be queued up and fired off one or two or three at a time (you choose).
+
+Here's an example:
+
+<code javascript exec>
+  var num1 = new Request({ url: '/wiki/simple.php', data: {num: 1, sleep: 1}, method: 'get',
+      onComplete: function(response){ console.log(response) } });
+  var num2 = new Request({ url: '/wiki/simple.php', data: {num: 2, sleep: 1}, method: 'get',
+      onComplete: function(response){ console.log(response) } });
+  var num3 = new Request({ url: '/wiki/simple.php', data: {num: 3, sleep: 1}, method: 'get',
+      onComplete: function(response){ console.log(response) } });
+  var myQueue = new Request.Queue();
+  //you can add them one at a time
+  myQueue.addRequest('num1', num1);
+  //or in a single call
+  myQueue.addRequests({ num2: num2, num3: num3 });
+  num1.send();
+  num2.send();
+  num3.send();
+</code>
+
+The above example will only allow the instances of Request to run one at a time. Each one will take about a second to return to the browser and the next item will then be sent. It integrates right into the //Request// class when you register it so you don't have to really change anything.
+
+Note that you can specify how many requests can run at a time. There are also numerous methods and options that you can use to configure things and use the class in numerous ways. I suggest you peruse the [[http://www.clientcide.com/docs/Request/Request.Queue|docs]] for all those details.

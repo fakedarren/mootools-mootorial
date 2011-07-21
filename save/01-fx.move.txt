@@ -1,0 +1,119 @@
+====== Fx.Move ======
+
+[[http://www.clientcide.com/docs/Fx/Fx.Move|docs]]
+
+//Fx.Move// is a lot like //[[04-element.position]]// in that it allows you to position an element relative to another one. In fact, it takes all the same arguments as //setPosition// (relativeTo, position, edge, and offset) but it also takes all the options of //[[mootorial:06-fx:01-fx.tween]]// so you can set a transition or duration, etc.
+
+<html>
+<div id="setPositionTarget" style="width: 50px; height: 50px; border: 1px solid #000; background-color: #600; z-index:99999"></div>
+<script>document.id('setPositionTarget').makeDraggable()</script>
+<br/><br/><br/><br/>
+</html>
+
+The default is to position is centered relative to the target:
+<code javascript exec>
+new Fx.Move(document.id('setPositionTarget')).start(); //centered in the window
+</code>
+
+<code javascript exec>
+new Fx.Move(document.id('setPositionTarget'), {
+  relativeTo: document.id('fxTarget') /*centered over a target*/
+}).start(); 
+</code>
+
+<code javascript exec>
+new Fx.Move(document.id('setPositionTarget'), {
+  relativeTo: document.id('fxTarget'),
+  position: 'upperRight'
+}).start(); 
+</code>
+
+<code javascript exec>
+new Fx.Move(document.id('setPositionTarget'), {
+  relativeTo: document.id('fxTarget'),
+  position: 'upperLeft'
+}).start(); 
+</code>
+
+<code javascript exec>
+new Fx.Move(document.id('setPositionTarget'), {
+  relativeTo: document.id('fxTarget'),
+  position: 'bottomLeft'
+}).start(); 
+</code>
+
+<code javascript exec>
+new Fx.Move(document.id('setPositionTarget'), {
+  relativeTo: document.id('fxTarget'),
+  position: 'upperRight',
+  offset: {x: 20, y: 20} /*move over and down*/
+}).start(); 
+</code>
+
+Additionally, you can specify an edge option that allows you to align the specified edge of the element relative to the relativeTo element's edge specified in the position argument. This lets you, for instance, position the upper right corner of the element to the bottom left corner of the relativeTo element.
+
+Examples:
+
+<code javascript exec>
+/* upperRight of element aligned to upperRight of relativeTo element*/
+new Fx.Move(document.id('setPositionTarget'), {
+  relativeTo: document.id('fxTarget'),
+  position: 'upperRight',
+  edge: 'upperRight'
+}).start(); 
+</code>
+
+<code javascript exec>
+/* bottomLeft of element aligned to bottomLeft of relativeTo element*/
+new Fx.Move(document.id('setPositionTarget'), {
+  relativeTo: document.id('fxTarget'),
+  position: 'bottomLeft',
+  edge: 'bottomLeft'
+}).start(); 
+</code>
+
+<code javascript exec>
+/* center of element aligned to upperRight of relativeTo element*/
+new Fx.Move(document.id('setPositionTarget'), {
+  relativeTo: document.id('fxTarget'),
+  position: 'upperRight',
+  edge: 'center'
+}).start(); 
+</code>
+
+===== Additional Options =====
+You can also specify the options available in //Fx.Morph//:
+
+<code javascript exec>
+new Fx.Move(document.id('setPositionTarget'), {
+  relativeTo: document.id('fxTarget'),
+  position: 'upperRight',
+  offset: {x: 20, y: 20},
+  transition: Fx.Transitions.Elastic.easeOut,
+	duration: 1000
+}).start(); 
+</code>
+
+===== Element.move =====
+//Element.move(options)// is just a shortcut to use the "built-in" instance of //Fx.Move// (much like //Element.tween// is a shortcut to a "built-in" instance of //Fx.Tween//).
+
+<code javascript exec>
+document.id('setPositionTarget').move({
+  relativeTo: document.id('fxTarget'),
+  position: 'bottomLeft',
+  edge: 'bottomLeft'
+});
+</code>
+
+==== Using Element.set and Element.get ====
+Like //Fx.Tween// or //Fx.Morph//, you can use //Element.get// and //Element.set// to control the "built-in" version of //Fx.Move//:
+
+<code javascript>
+document.id('myElement').set('move', {
+	duration: 1000,
+	transition: 'bounce:out'
+});
+</code>
+<code javascript>
+document.id('myElement').get('move').cancel();
+</code> 

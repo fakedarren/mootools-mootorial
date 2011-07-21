@@ -1,0 +1,65 @@
+====== Element.Forms ======
+[[http://www.clientcide.com/docs/Element/Element.Forms|docs]]
+
+This script has helpers for managing text selection and manipulation in form elements. Eventually I expect more form functionality to get added, but for now, its all about the kind of stuff that wysiwyg editors need to insert html around selected text and that sort of thing.
+
+**NOTE**
+Since these examples are all about selections and caret locations, I can't have code examples that you click to execute (because this will change the focus).
+
+
+
+
+===== Element.getTextInRange =====
+Returns the value of the text within a given range in the input.
+
+<html>
+<style>input.example {clear: both;width: 500px;display: block;}</style>
+text in range (click the input to execute):
+<input class="example" value="0123456789" id="ip1" onclick="EFexample(this, 'getTextInRange(2,5)', document.id(this).getTextInRange(2,5))"><input class="example"></html>
+
+
+===== Element.getSelectedText =====
+Gets the text that is currently selected.
+
+<html>selected text (select some text to execute):
+<input class="example" value="0123456789" id="ip2" onclick="EFexample(this, 'getSelectedText', document.id(this).getSelectedText())"><input class="example"></html>
+
+
+===== Element.getSelectedRange =====
+Gets the range that is selected.
+
+<html>getSelectedRange: (select some text to execute)
+<input class="example" value="0123456789" id="ip3" onclick="EFexample(this, 'getSelectedRange', JSON.encode(document.id(this).getSelectedRange()))"><input class="example"></html>
+
+
+===== Element.selectRange =====
+Selects a range of text.
+
+<html>selectRange (click to execute; this example passes in an array [2,5]):
+<input class="example" value="0123456789" id="ip4" onclick="EFexample(this, 'selectRange(2,5)', ''); document.id(this).selectRange(2,5)"><input class="example"></html>
+
+===== Element.insertAtCursor =====
+Insert text at the cursor location.
+
+<html>insertAtCursor (click anywhere to insert the example):
+<input class="example" value="0123456789" id="ip6" onclick="EFexample(this, 'insertAtCursor(\'!!!INSERTED!!!\')', document.id(this).insertAtCursor('!!!INSERTED!!!'))"><input class="example"></html>
+
+===== Element.insertAroundCursor =====
+Wraps text with the given strings.
+
+<html>insertAroundCursor (select some text or click anywhere to insert "<" and ">" around the text):
+<input class="example" value="0123456789" id="ip7" onclick="EFexample(this, 'insertAroundCursor({before: \'<\', after: \'>\'})', document.id(this).insertAroundCursor({before: '<', after: '>'}))"><input class="example"></html>
+
+<html><script>function EFexample(input, txt, value){try {input.getNext().value = txt + ": " + value;}catch(e){dbug.log(e)}}</script></html>
+
+
+===== Element.tidy =====
+Removes MS-Word style non-ASCI characters from an input. See also [[clientcide-libraries:03-native:03-string.extras#tidy|String.tidy]].
+
+<html>
+<input type="text" value="“‘…’”" id="tidyExample">
+</html>
+<code javascript exec>
+document.id('tidyExample').tidy();
+//input value is now "'...'"
+</code>

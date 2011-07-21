@@ -1,0 +1,4 @@
+====== Native Extensions ======
+MooTools is flush with tons of extensions to the native javascript objects ([[http://www.mootorial.com/wiki/mootorial/03-native/00-array|Array]], [[http://www.mootorial.com/wiki/mootorial/03-native/01-function|Function]], [[http://www.mootorial.com/wiki/mootorial/03-native/02-number|Number]], [[http://www.mootorial.com/wiki/mootorial/03-native/03-string|String]], [[http://www.mootorial.com/wiki/mootorial/03-native/04-hash|Hash]], [[http://www.mootorial.com/wiki/mootorial/03-native/05-event|Event]]). Despite this, we somehow managed to come up with a few more. Some of them are really useful for specific applications, so you may not find yourself with a need for them all.
+
+{{indexmenu>clientcide-libraries:03-native}} 

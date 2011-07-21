@@ -1,0 +1,139 @@
+====== Element.Measure ======
+[[http://www.clientcide.com/docs/Element/Element.Measure|docs]]
+
+MooTools has several tools for figuring out the sizes of things, but there were some things we wanted to do that needed a bit more code.
+
+
+
+===== Element.getDimensions =====
+//Element.getDimensions()// returns an object that has the width and the height of an element (//{width: 10, height: 20}//) for example).
+
+MooTools has it's own //[[http://www.mootorial.com/wiki/mootorial/04-element/03-element.dimensions#element.getsize|Element.getSize()]]// which returns an object with scroll, size, and scrollsize values, as well as its //getStyle// (//[[http://www.mootorial.com/wiki/mootorial/04-element/02-element.style|.getStyle('width')]]// for example), and its //[[http://www.mootorial.com/wiki/mootorial/04-element/03-element.dimensions#element.getposition|.getPosition]]// which returns width, height, left, right, top, and bottom values.
+
+So why do we have our function? It does one thing that MooTools many methods of getting width and height does not: it will return these values for elements that are hidden (//display: none//, specifically).
+
+It does this by temporarily exposing the element (but also setting it's visiblity to hidden and it's position to absolute), measuring it, and then putting it back the way it was. If you try and ascertain the width and height of an element that is not displayed, you'll get a zero back for each. So //getDimensions// is something we use when the element isn't displayed.
+
+<code javascript exec>
+/*first, let's print to the console 
+  the size before we hide it*/
+console.log('target visible, size: %o', document.id('fxTarget').getSize());
+
+document.id('fxTarget').setStyle('display', 'none');
+/*let's try and get size for it now that it's hidden*/
+console.log('target hidden, size: %o', document.id('fxTarget').getSize());
+/*ok, that didn't work, so let's try getDimensions*/
+console.log('target hidden, getDimensions: %o', document.id('fxTarget').getDimensions());
+document.id('fxTarget').setStyle('display','block');
+
+/* should print the following in the console:
+target visible, size: Object x=102 y=102
+target hidden, size: Object x=0 y=0
+target hidden, getDimensions: Object width=102 height=102 x=102 y=102 */
+</code>
+
+Note that it returns //.width// and //.height// in addition to //.x// and //.y//. The values are the same (width == x, height == y) so you can use either.
+
+If you want, use can use [[#element.getcomputedsize|Element.getComputedSize]] by passing in the option //computeSize// as true. This will use //getDimensions// method of getting values for hidden objects but return to you the object that //getComputedSize// generates.
+
+<code javascript exec>
+document.id('fxTarget').getDimensions({computeSize: true});
+</code>
+
+===== Element.getComputedSize =====
+This function allows you to get the calculated width of an element as well as the values for padding and border (or optionally additional css properties) that are used in computing that size.
+
+The object you get back looks like this:
+<code javascript>{
+  padding-top:0,
+  border-top-width:1,
+  padding-bottom:0,
+  border-bottom-width:1,
+  padding-left:0,
+  border-left-width:1,
+  padding-right:0,
+  border-right-width:1,
+  width:100,
+  height:100,
+  totalHeight:102,
+  computedTop:1,
+  computedBottom:1,
+  totalWidth:102,
+  computedLeft:1,
+  computedRight:1
+}</code>
+
+This is useful when you want to position something or figure out its dimensions including various css properties. It's used in [[04-element.position#element.setposition|Element.setPosition()]] and also can be used in [[#element.getdimensions|Element.getDimensions]].
+
+<code javascript exec>
+document.id('fxTarget').getComputedSize();
+/*returns
+{
+  padding-top:0,
+  border-top-width:1,
+  padding-bottom:0,
+  border-bottom-width:1,
+  padding-left:0,
+  border-left-width:1,
+  padding-right:0,
+  border-right-width:1,
+  width:100,
+  height:100,
+  totalHeight:102,
+  computedTop:1,
+  computedBottom:1,
+  totalWidth:102,
+  computedLeft:1,
+  computedRight:1
+}*/
+</code>
+
+
+<code javascript exec>
+document.id('fxTarget').getComputedSize({
+  /*limit our calculations to height, top, and bottom */
+  mode: 'vertical' 
+});
+/*returns{
+  padding-top  :0,
+  border-top-width  :1,
+  padding-bottom  :0,
+  border-bottom-width  :1,
+  height  :100,
+  totalHeight  :102,
+  computedTop  :1,
+  computedBottom  :1
+}*/
+</code>
+
+<code javascript exec>
+document.id('fxTarget').setStyles({
+  margin: '5px',
+  padding: '7px'
+}).getComputedSize({
+  /*include margin in addition to the default border and padding */
+  styles: ['border','padding','margin'] 
+});
+/*returns{
+  border-top-width  :1,
+  padding-top  :7,
+  margin-top  :5,
+  border-bottom-width  :1,
+  padding-bottom  :7,
+  margin-bottom  :5,
+  border-left-width  :1,
+  padding-left  :7,
+  margin-left  :5,
+  border-right-width  :1,
+  padding-right  :7,
+  margin-right  :5,
+  width  :100,
+  height  :100,
+  totalHeight  :126,
+  computedTop  :13,
+  computedBottom  :13,
+  totalWidth  :126,
+  computedLeft  :13,
+  computedRight  :13
+}*/
+</code>

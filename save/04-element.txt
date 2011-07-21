@@ -1,0 +1,4 @@
+====== Element Extensions ======
+MooTools gives a lot of love to the native Element object, but we've found a few things to add to it. Mostly it's enhancements for positioning elements, dealing with forms and form inputs, as well as a few simple shortcuts.
+
+{{indexmenu>clientcide-libraries:04-element}}

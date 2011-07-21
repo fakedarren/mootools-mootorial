@@ -1,0 +1,4 @@
+====== Request Extensions ======
+The MooTools //Request// classes handle all the Ajax-style requests you could ask for. This is great when you need to send or receive data to/from the same domain as your page, but in certain instances you may need to be able to send cross-domain requests. The only method that really allows for this is script injection, better known as JsonP.
+
+{{indexmenu>clientcide-libraries:06-request}}

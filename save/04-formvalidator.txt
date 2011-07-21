@@ -1,0 +1,265 @@
+====== FormValidator ======
+
+[[http://mootools.net/docs/more/Forms/FormValidator|docs]]
+
+
+===== InputValidator =====
+
+The //InputValidator// class creates a single object that will validate a form input for a specific type of data. For instance, you might have an //InputValidator// for required fields that just makes sure the user has input //something//, while another //InputValidator// might check for a date format.
+
+It's important to note that these are all javascript which means that they are easily circumvented. For security's sake, you should still validate the input on the receiving end (your php or java servlet or whatever).
+
+Here's what an InputValidator looks like:
+
+<html><input type="text" name="firstName" id="firstName"></html>
+<code javascript exec>
+var isEmpty = new InputValidator('required', {
+  errorMsg: 'This field is required.',
+  test: function(field){
+    return ((field.get('value') == null) || (field.get('value').length == 0));
+  }
+});
+if(isEmpty.test(document.id("firstName"))) /*true if empty*/
+  StickyWin.alert('input error', isEmpty.getError(document.id("firstName"))); /*alerts "This field is required."*/
+</code>
+
+If you execute the code above with the input empty, you'll get an error message.
+
+
+===== FormValidator =====
+The //FormValidator// class will validate an entire form using a collection of input validators. Each input in the form is given a classname that corresponds to an input validator, and then as the user interacts with the form the inputs are validated.
+
+The library comes with numerous validators already defined, but adding new ones is easy enough. For instance, to add the validator in the example above (though it's already defined by default, but just to illustrate the process...):
+
+<code javascript>
+FormValidator.add('IsEmpty', {
+  errorMsg: 'This field is required.',
+  test: function(element) { 
+    return ((element.get('value') == null) || (element.get('value').length == 0));
+  }
+});
+</code>
+
+Now if you give any input the class "IsEmpty" the FormValidator can validate that.
+
+You can also add these in bulk with an array of validators, but you can see this in action in the script and I won't illustrate it here.
+
+==== Handling an invalid submit state ====
+
+When the user attempts to submit the form, the validator will test all the fields (it also tests them as they are changed). When the form is submitted, the FormValidator handles the submit event for you. It's best to integrate your logic with the FormValidator's submit handling than to add your own submit handler in addition to the FormValidator's.
+
+<code javascript>
+var myValidator = new FormValidator(document.id('myform'), {
+	onFormValidate: function(passed, form, event) {
+		if (passed) {
+			event.preventDefault(); //stop the normal behavior of submitting the form.
+			form.send(); //send via ajax
+		}
+	}
+});
+</code>
+
+This is preferable to having your ajax logic in a submit handler on the form, though it is possible. You can always do it like this, though it's a bit redundant:
+
+<code javascript>
+var myValidator = new FormValidator(document.id('myform'));
+document.id('myform').addEvent('submit', function(event){
+	if (myValidator.validate()) {
+		event.preventDefault(); //stop the normal behavior of submitting the form.
+		this.send(); //send via ajax
+	}
+});
+</code>
+
+This effectively runs all the validation logic twice (the FormValidator will test the form on submit by default). It's better to use the first example.
+
+
+===== FormValidator.Inline =====
+
+The FormValidator class allows you to test if a form is valid, but it doesn't do anything to tell the user what is and isn't a valid input. The base class just tests a form's inputs. If you want to test a form to see if it's valid and handle the display of errors on your own, you will have to write a bit more code. FormValidator.Inline handles the displaying of error messages for you. It injects the messages into the document as the user enters invalid data and hides them when the user fixes it. For the purposes of this tutorial, I'm going to focus on the usage of this inline format.
+
+Here is form validator in action. Here's our sample form:
+
+<html>
+<style>
+.validation-failed {
+border: 1px solid #f00;
+}
+.validation-passed {
+border: 1px solid green;
+}
+.validation-advice {
+margin: 2px; padding: 2px; color:#fff; background-color:#f00;
+}
+.warning {
+	border: 1px solid #c66;
+}
+.warning-advice {
+	margin: 2px; padding: 2px; color:#fff; background-color:#bbb;
+}
+</style>
+<ul>
+<form id="formExample" action="javascript:alert('passed validation');">
+<li>user name: <input type="text" name="userName" id="userName" class="minLength maxLength" validatorProps="{minLength:10, maxLength:20}"></li>
+<li>first name: <input type="text" name="firstName" id="firstName" class="required"></li>
+<li>last name: <input type="text" name="lastName" id="lastName" class="required"></li>
+<li>age: <input type="text" name="age" id="age" class="required validate-integer"></li>
+<li>sex: M (<input type="radio" name="sex" value="m" class="validate-one-required">) - F (<input type="radio" name="sex" value="f">)</li>
+<li>birth-date: <input type="text" name="birthDate" id="birthDate" class="validate-date"> (optional, DD/MM/YYYY)</li>
+<li>home page: <input type="text" name="homePage" id="homePage" class="validate-url"> (optional)</li>
+</ul>
+<input type="submit"></form></html>
+
+<code javascript exec>
+new FormValidator.Inline('formExample');
+</code>
+
+Ok, execute the code example above, then start filling out the form. Skip through some fields and enter some bad data in others (like a non-number value for age).
+
+
+==== Warnings ====
+Each //Validator// can also be used to generate warnings. Warnings still show error messages, but do not prevent the form from being submitted. Warnings can be applied in two ways.
+
+  * **warn per validator** - You can specify any validator as a warning by prefixing "warn-" to the class name. So, for example, if you have a validator called "validate-numbers" you can add the class "warn-validate-numbers" and a warning will be offered rather than an error. The validator will not prevent the form from submitting.
+  * **warn per field** - You can also ignore all the validators for a given field. You can add the class "warnOnly" to set all it's validators to present warnings only or you can add the class "ignoreValidation" to the field to turn all the validators off. Note that the FormValidator class has methods do this for you: //FormValidator.ignoreField// and  //FormValidator.enforceField//. See the [[http://www.clientcide.com/cnet.gf/docs/files3/common/js-widgets/form-validator-js.html|docs]].
+
+Example:
+
+<html><ul>
+<form id="formExample2" action="javascript:alert('passed validation');">
+<li>user name: <input type="text" name="userName" id="userName2" class="required warn-minLength warn-maxLength" validatorProps="{minLength:10, maxLength:20}"></li>
+<li>first name: <input type="text" name="firstName" id="firstName2" class="required"></li>
+<li>last name: <input type="text" name="lastName" id="lastName2" class="required"></li>
+<li>age: <input type="text" name="age" id="age2" class="required validate-integer"></li>
+<li>sex: M (<input type="radio" name="sex" value="m" class="validate-one-required">) - F (<input type="radio" name="sex" value="f">)</li>
+<li>birth-date: <input type="text" name="birthDate" id="birthDate2" class="validate-date"> (optional, DD/MM/YYYY)</li>
+<li>home page: <input type="text" name="homePage" id="homePage2" class="validate-url"> (optional)</li>
+</ul>
+<input type="submit"></form>
+<script>var validator2;</script>
+</html>
+<code javascript exec>
+//I've already defined validator2 for scope reasons
+validator2 = new FormValidator.Inline('formExample2');
+</code>
+In this example I've set up the first field to warn you if you exceed 20 characters or input less than 10, but it won't fail validation and you can submit the form as long as you have one character in the field.
+<code html>
+<input type="text" name="userName" id="userName2" class="required warn-minLength warn-maxLength" validatorProps="{minLength:10, maxLength:20}">
+</code>
+
+As you can see, I've pre-pended "warn-" to the same class names I would have given it previously. By adding "warn-" to the classname for a validator, you tell the class that these things should still provide hints, but the form is ok to submit if they don't pass. Note that //required// does not have a "warn-" prefix. This means that the field can't be empty. In this way you can provide validators that give feedback but allow for a more flexible input.
+
+
+
+===== Ignoring an entire field =====
+
+You may find that at some point the context of your form has changed and you want to turn off validation for certain fields. For instance, maybe you want to force users who are over 13 to give you their zip code, but for kids you are going to hide this input. You need to stop monitoring that field because the context changed.
+
+<code javascript exec>
+validator2.enforceField('birthDate2'); 
+//document.id('birthDate2')'s validator is now required to pass 
+//(in this case, that the date is a valid format)
+</code>
+
+<code javascript exec>
+validator2.ignoreField('birthDate2'); 
+//document.id('birthDate2') now will take any string without complaint
+</code>
+
+You can also make all the validators switch to warning mode (so the field can be submitted even if they all fail):
+
+<code javascript exec>
+validator2.ignoreField('homePage2', true); 
+//document.id('homePage2') will complain if you put in an 
+//invalid url, but you can still submit the form.
+</code>
+==== Field Options ====
+Note that the first input above enforces not only that the input is required, but also that it is a certain length (between 10 and 99 chars). Validators can have configurations for individual fields. This is done with an html property called "validatorProps" which has an object with key/value definitions. Here's what that first input above looks like:
+
+<code html>
+<input type="text" name="userName" id="userName" class="minLength maxLength" validatorProps="{minLength:10, maxLength:20}">
+</code>
+
+You can see that the class for minLength and maxLength are applied, but the validator needs to know what these numbers are. The object in the "validatorProps" (//{minLength:10, maxLength:20}//) is passed along to each validator that gets executed, so the validator for minLength looks like this:
+
+<code javascript>
+FormValidator.add('minLength', {
+  errorMsg: function(element, props){
+   if($type(props.minLength))
+     return 'Please enter at least ' + props.minLength + ' characters (you entered ' + element.get('value').length + ' characters).';
+   else return '';
+  }, 
+  test: function(element, props) {
+    if($type(props.minLength)) return (element.get('value').length >= $pick(props.minLength, 0));
+    else return true;
+  }
+});
+</code>
+
+You can see that the //[[#inputvalidator|InputValidator]]// class that's created with these options (//FormValidator.add// creates an instance of //InputValidator//) passes along both the input element and the props object for that element.
+
+==== Instance Validators ====
+
+You can use //FormValidator.add// to add validators to every instance of //FormValidator//, but you can also create validators for a specific instance of the Class. The //.add// method and the //.addAllThese// method are properties of every instance of FormValidator as well as the FormValidator object itself. Adding validators to an instance of FormValidator will make those validators apply only to that instance, while adding them to the Class will make them available to all instances.
+
+Examples:
+
+<code javascript>
+//add a validator for ALL instances
+FormValidator.add('isEmpty', {
+	errorMsg: 'This field is required',
+	test: function(element){
+		if(element.value.length ==0) return false;
+		else return true;
+	}
+});
+
+//this validator is only available to this single instance
+var myFormValidatorInstance = new FormValidator('myform');
+myFormValidatorInstance.add('doesNotContainTheLetterQ', {
+	errorMsg: 'This field cannot contain the letter Q!',
+	test: function(element){
+		return !element.get('value').test('q','i');
+	}
+});
+
+//Extend FormValidator, add a global validator for all instances of that version
+var NewFormValidator = FormValidator.extend({
+	//...some code
+});
+NewFormValidator.add('doesNotContainTheLetterZ', {
+	errorMsg: 'This field cannot contain the letter Z!',
+	test: function(element){
+		return !element.get('value').test('z','i');
+	}
+});
+</code>
+==== Styling the error messages ====
+//FormValidator// inserts error messages right after inputs when it generates an error. These slide into place. These blocks of text have the class "validation-advice" and you can make them look like whatever you like. Additionally, each field that is validated gets the class of either "validation-failed" or "validation-passed", so you can also highlight the input. There are also classes for the warning advice and the field when a warning is present. Here's the style I've applied to the inputs above:
+
+<code css>
+.validation-failed {
+  border: 1px solid #f00;
+}
+.validation-passed {
+  border: 1px solid green;
+}
+.validation-advice {
+  margin: 2px; 
+  padding: 2px; 
+  color:#fff; 
+  background-color:#f00;
+}
+.warning {
+	border: 1px solid #c66;
+}
+.warning-advice {
+	margin: 2px;
+	padding: 2px;
+	color:#fff;
+	background-color:#bbb;
+}
+</code>
+
+==== Using Titles ====
+Finally, you can instruct //FormValidator// to use the titles of inputs for the validation message. The default is not to do this, but if you enable it and an input has a title, when the input fails to validate the title value of the field will be displayed instead of the validator's default error message.

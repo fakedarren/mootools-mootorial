@@ -1,0 +1,91 @@
+====== Request.JSONP ======
+
+[[http://mootools.net/docs/more/Request/Request.JSONP|docs]]
+
+//JSONP// is a means by which to get JSON data from another domain than the one your page is on. If you try and use Ajax to request data from a different domain than the page, you'll get a security error.
+
+One way around this is a concept some call [[http://ajaxian.com/archives/jsonp-json-with-padding|"JSONP"]]. This is where you include a script tag in your document. This script tag points to an external javascript source and when the script tag loads it executes (like any other script tag).
+
+The catch is that you need to be able to tell that server what to wrap the data with so your functions can handle it.
+
+Let's say we are on this page at clientcide.com. Let's say we want to get some data from the flicker api at [[http://www.flickr.com/services/api/|flicker.com/services/api]]. Here's a simple request that gets the latest photos:
+
+[[http://www.flickr.com/services/feeds/photos_public.gne?format=json|http://www.flickr.com/services/feeds/photos_public.gne?format=json]]
+
+This url will return a bunch of JSON data about that ipod that looks like this:
+
+<code>
+jsonFlickrFeed({
+		"title": "Uploads from everyone",
+		"link": "http://www.flickr.com/photos/",
+		"description": "",
+		"modified": "2009-12-07T23:23:50Z",
+		"generator": "http://www.flickr.com/",
+		"items": [
+	   {
+			"title": "IMG_0334",
+			"link": "http://www.flickr.com/photos/ccie/4166986893/",
+			"media": {"m":"http://farm3.static.flickr.com/2604/4166986893_db94b48b0e_m.jpg"},
+			"date_taken": "2009-12-02T15:55:07-08:00",
+			"description": "<p><a href=\"http://www.flickr.com/people/ccie/\">ccie<\/a> posted a photo:<\/p> <p><a href=\"http://www.flickr.com/photos/ccie/4166986893/\" title=\"IMG_0334\"><img src=\"http://farm3.static.flickr.com/2604/4166986893_db94b48b0e_m.jpg\" width=\"240\" height=\"160\" alt=\"IMG_0334\" /><\/a><\/p> ",
+			"published": "2009-12-07T23:23:50Z",
+			"author": "nobody@flickr.com (ccie)",
+			"author_id": "82992103@N00",
+			"tags": ""
+	   }
+//...etc
+});
+</code>
+
+Typically JSON requests reply with an object (just {...}), which, if loaded in a script tag, wouldn't do anything. Flickr actually wraps it's response in a method called "jsonFlickrFeed" which it expects you to define. But not all services do this by default.
+
+What we can do is add to the url "jsoncallback=<myFunctionName>" and it will wrap that data with the reference to any function we name (this is what the Flickr Api service does; other services may have a different jsoncallback=... key).
+
+Adding //jsoncallback=blah// to the query string will return data like this:
+
+<code>blah({...json info...})</code>
+
+So now we can include that script tag in our body and it will execute our function ('blah') with the json data returned. Nifty, eh?
+
+Enter //Request.JSONP//, a class that works a lot like the Ajax class, but does this json stuff instead. Here's a simple example:
+
+<html>
+<div id="flickr1"></div>
+</html>
+
+<code javascript exec>
+new Request.JSONP({
+	callbackKey: 'jsoncallback',
+	url: 'http://www.flickr.com/services/feeds/photos_public.gne?format=json',
+	onComplete: function(data){
+		new Element('div').adopt(
+			new Element('img', {
+				src: data.items[0].media.m
+			})
+		).inject(document.id('flickr1'));
+	}
+}).send(); //injects the first image into the dom element #flickr1
+</code>
+
+Again, works pretty much like Ajax does. In order to work, you have to specify the callback string. It defaults to "callback" so I have to specify it here because Flickr expects 'jsoncallback'. You can also specify a query string for the url and additional data as an object. Here's the same thing as above, but using these two other options:
+
+<html>
+<div id="flickr2"></div>
+</html>
+
+<code javascript exec>
+new Request.JSONP('http://www.flickr.com/services/feeds/photos_public.gne', {
+	callbackKey: 'jsoncallback',
+	data: {
+		tags: 'blue'
+	},
+	queryString: 'format=json',
+	onComplete: function(data){
+		new Element('div').adopt(
+			new Element('img', {
+				src: data.items[0].media.m
+			})
+		).inject(document.id('flickr2'));
+	}
+}).send(); //gets the first image with the tag "blue"
+</code>

@@ -1,0 +1,6 @@
+====== Browser Extensions ======
+MooTools includes a [[http://www.mootorial.com/wiki/mootorial/01-core/01-browser|Browser Hash]] object that includes information about the client. MooTools also, throughout the library, has code to eliminate browser inconsistencies for you.
+
+Unfortunately, there are a few still out there, and when we run into one and come up with a solution (or, more likely, fine one on the net somewhere) we add it to our library.
+
+{{indexmenu>clientcide-libraries:02-browser}}

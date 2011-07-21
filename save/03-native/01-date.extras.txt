@@ -1,0 +1,84 @@
+====== Date.Extras ======
+
+[[http://www.clientcide.com/docs/Native/Date.Extras|docs]]
+
+//date.extras.js// just adds some more functionality to the //date.js// extensions to the //Date// native. They are split up so that if you have something simple to implement that you want to keep the code small (like our [[01-cms-and-form-helpers#date.picker.js|Date Picker]], you can only include the basic //date.js//.
+
+Here's what you get with //date.extras.js//:
+
+
+===== Date.timeDiffInWords =====
+<code javascript exec>
+var example = new Date();
+console.log(example.timeDiffInWords()); /* "less than a minute ago" */
+example.decrement('hour');
+console.log(example.timeDiffInWords()); /* "about an hour ago" */
+example.increment('hour', 2);
+console.log(example.timeDiffInWords()); /* "about an hour from now" */
+</code>
+
+
+===== Date.getOrdinal =====
+Returns the ordinal for the day ("th", "nd", etc).
+
+<code javascript exec>
+new Date().getOrdinal();
+</code>
+
+===== Date.getDayOfYear =====
+Returns the day of the year (so Dec 31 is 365 unless it's leap year).
+
+<code javascript exec>
+Date.parse("12.31.1999").getDayOfYear(); //365
+</code>
+
+===== Date.getLastDayOfMonth =====
+So for Dec you'd get 31.
+
+<code javascript exec>
+var dec = new Date();
+dec.setMonth(11);
+dec.getLastDayOfMonth(); //31
+</code>
+
+===== Date.getWeek =====
+Returns what week you're in of the year, so Dec 31 will return 52.
+
+<code javascript exec>
+Date.parse("12.31.1999").getWeek(); //52
+</code>
+
+
+===== Additional Parsers =====
+The biggest thing you get with //date.extras.js// is a whole bunch of parsers. //date.js// just includes the basics ("12/31/1999" and "12/31/1999 11:59pm"), while //date.extras.js// includes another ten.
+
+<code javascript exec>
+Date.parse('1999-12-31 23:59:59')
+</code>
+<code javascript exec>
+Date.parse('1999-12-31T23:59:59+0200')
+</code>
+<code javascript exec>
+Date.parse('today')
+</code>
+<code javascript exec>
+Date.parse('tomorrow')
+</code>
+<code javascript exec>
+Date.parse('yesterday')
+</code>
+<code javascript exec>
+Date.parse('next monday')
+</code>
+<code javascript exec>
+Date.parse('1st')
+</code>
+<code javascript exec>
+Date.parse('14th October')
+</code>
+<code javascript exec>
+Date.parse('24th May, 2007')
+</code>
+<code javascript exec>
+Date.parse('May 3rd 2006')
+</code>

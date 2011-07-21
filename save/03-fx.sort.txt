@@ -1,0 +1,154 @@
+====== Fx.Sort ======
+
+[[http://www.clientcide.com/docs/Fx/Fx.Sort|docs]]
+
+This effect will rearrange a group of elements using a transition. **Note:** this effect is not recommended for very large sets of elements.
+
+Elements must all be contained by the same parent, and it will work best if these elements are the only children in that parent (for instance, all the list items in a list). Additionally, the effect will set their position to be relative if they are not positioned. Absolutely positioned elements will likely have trouble (I haven't tested that out yet).
+
+Here's what it looks like to create one:
+
+<code javascript>
+var mySort = new Fx.Sort($$('ul li'));
+mySort.sort([3,2,1,0]); //specify a specific order
+mySort.forward(); //0,1,2,3,etc.
+</code>
+
+Here's a quick demo (I've already created the instance of the effect for this demo):
+<html>
+<style type="text/css">
+ #sorter li {
+		border: 1px solid #666;
+		margin: 8px;
+		padding: 4px;
+ }
+ div.spanner {
+  float: left;
+  margin: 4px;
+	padding: 2px;
+	border: 1px solid #000;
+ }
+            
+</style>
+<ol id="sorter">
+  <li id="li0">(0) stuff</li>
+  <li id="li1">(1) more stuff<br />
+  really</li>
+  <li id="li2">(2) still more stuff</li>
+  <li id="li3">(3) loads o stuff</li>
+  <li id="li4">(4) blah<br />
+  blah<br />
+  blah</li>
+</ol>
+<script type="text/javascript">
+var vert;
+var horz;
+window.addEvent('domready', function(){
+   vert = new Fx.Sort($$('#sorter li'), {transition: Fx.Transitions.Back.easeInOut, duration: 1000});
+   horz = new Fx.Sort($$('.spanner'), {mode: "horizontal", transition: Fx.Transitions.Back.easeInOut, duration: 1000});
+   document.id('h').addEvent('click', function(){
+       horz.sort(document.id('order').get('value').split(','));
+   })
+   document.id('v').addEvent('click', function(){
+       vert.sort(document.id('order').get('value').split(','));
+   })
+			
+	$$('#fxTransition, #fxEase, #duration').addEvent('change', function(){
+		vert.options.transition = Fx.Transitions[document.id('fxTransition').get('value')][document.id('fxEase').get('value')];
+		vert.options.duration = document.id('duration').get('value').toInt();
+		horz.options.transition = Fx.Transitions[document.id('fxTransition').get('value')][document.id('fxEase').get('value')];
+		horz.options.duration = document.id('duration').get('value').toInt();
+	})
+});
+</script>
+<div class="spanner">one</div>
+<div class="spanner">two</div>
+<div class="spanner">three</div>
+<div class="spanner">four</div>
+<div class="spanner">five</div>
+
+<br style="clear: both">
+
+<input id="order" type="text" value="0,1,2,3,4" /> 
+<input type="button" value="vertical sort" id="v" /> 
+<input type="button" value="horizontal sort" id="h" /><br />
+ <a href="javascript:document.id('order').value='0,1,2,3,4';void(0);">forward</a> | 
+ <a href="javascript:document.id('order').value='4,3,2,1,0';void(0);">backward</a> | 
+ <a href="javascript:document.id('order').value='3,4,2,0,1';void(0);">3,4,2,0,1</a> | 
+ <a href="javascript:document.id('order').value='2,3,0,1,4';void(0);">2,3,0,1,4</a>
+<br/>
+<br/>
+
+<label for="fxTransition">Transition</label>: 
+<select id="fxTransition" style="width: 100px;">
+	<option value="linear">
+		Linear
+	</option>
+	<option value="Quad">
+		Quadratic
+	</option>
+	<option value="Cubic">
+		Cubic
+	</option>
+	<option value="Quart">
+		Quartic
+	</option>
+	<option value="Quint">
+		Quintic
+	</option>
+	<option value="Sine">
+		Sinusoidal
+	</option>
+	<option value="Expo">
+		Exponential
+	</option>
+	<option value="Circ">
+		Circular
+	</option>
+	<option value="Bounce">
+		Bouncing
+	</option>
+	<option value="Back" selected>
+		Back
+	</option>
+	<option value="Elastic">
+		Elastic
+	</option>
+</select>
+<select id="fxEase" style="width: 100px;">
+	<option value="easeIn">
+		easeIn
+	</option>
+	<option value="easeOut">
+		easeOut
+	</option>
+	<option value="easeInOut" selected>
+		easeInOut
+	</option>
+
+</select>
+<label for="duration">duration</label>: 
+<input type="text" id="duration" value="1000" style="width: 60px;" />
+<br/><br/>
+</html>
+
+In addition to specifying a new order using numbers, there are some other methods.
+
+<code javascript exec>
+vert.forward(); //0,1,2,3,etc.
+</code>
+<code javascript exec>
+vert.backward(); //3,2,1,0
+</code>
+<code javascript exec>
+vert.swap(3,1);
+</code>
+<code javascript exec>
+vert.reverse(); //reverses the current order
+</code>
+
+Finally, you can sort a list and then rearrange the DOM so that the new sort is reflected in the body of the document.
+
+<code javascript exec>
+vert.backward().chain(vert.rearrangeDOM.bind(vert));
+</code>

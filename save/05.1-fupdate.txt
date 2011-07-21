@@ -1,0 +1,30 @@
+====== Fupdate ======
+
+[[http://www.clientcide.com/docs/Forms/Fupdate|docs]]
+
+This class just automates the basic pattern of having a form that, when submitted, should send its data to the server via Ajax and take whatever comes back and inject it into a DOM element.
+
+<html>
+<form action="/wiki/simple.html.php" id="fupdateForm">
+	<input type="text" name="message" title="enter some text here" class="OverTxt">
+	<input type="submit">
+</form>
+<ul id="fupdateReply">
+	<li>I'm a list item that will be replaced when you submit the form above</li>
+</ul>
+<script>
+	window.addEvent('domready', function(){
+		new OverText($$('input.OverTxt'));
+	});
+</script>
+</html>
+
+<code javascript exec>
+new Fupdate(document.id('fupdateForm'), document.id('fupdateReply'));
+</code>
+
+That's pretty much all you gotta do.
+
+===== About the name =====
+
+I know - "Fupdate" (Form Update abbr.) is kinda lame, but I really couldn't come up with a better name... BTW, it's pronounced as one word (not "F-Update"; rather "fupdate"). I'm open to suggestions!

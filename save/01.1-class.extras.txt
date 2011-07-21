@@ -1,0 +1,4 @@
+====== Class.Extras ======
+The [[http://www.mootorial.com/wiki/mootorial/02-class|MooTools Class]] has a few plugins in [[http://www.mootorial.com/wiki/mootorial/02-class/01-class.extras|Class.Extras.js]], including [[http://www.mootorial.com/wiki/mootorial/02-class/01-class.extras#the-chain-class|Chain]], [[http://www.mootorial.com/wiki/mootorial/02-class/01-class.extras#the-options-class|Options]], and [[http://www.mootorial.com/wiki/mootorial/02-class/01-class.extras#the-events-class|Events]].
+
+I've extended the Chain class a little with [[01-chain.wait|Chain.Wait]], and I've also added a new kind of Class mutator: [[02-class.binds|Class.Binds]].
