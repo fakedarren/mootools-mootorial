@@ -1,0 +1,53 @@
+HTML, BODY {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+BODY {
+}
+
+H1, H2, P {
+	clear: both;
+}
+
+.container {
+	margin: 0 auto;
+	width: 960px;
+}
+NAV[role=menu] {
+	float: left;
+	width: 300px;
+}
+.main {
+	float: right;
+	width: 650px;
+}
+
+H4 {
+    background: #CCC;
+    color: #666;
+    cursor: pointer;
+    float: left;
+    font-weight: normal;
+    height: 25px;
+    line-height: 25px;
+    margin: 0 5px 0 0;
+    padding: 0 5px;
+}
+H4.current {
+    background: #FFF;
+    color: #222;
+    line-height: 25px;
+}
+DIV.example, DIV.CodeMirror, TEXTAREA {
+    background: #FFF;
+    float: right;
+    left: -9999px;
+    position: absolute;
+    margin: 25px 0 0 -300px;
+    width: 650px;
+}
+DIV.example.current, DIV.CodeMirror.current, TEXTAREA.current {
+    left: auto;
+    position: relative;
+}
