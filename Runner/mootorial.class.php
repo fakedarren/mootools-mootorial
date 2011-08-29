@@ -1,5 +1,6 @@
 <?php
 $dir = dirname(__FILE__);
+require("$dir/url.class.php");
 require("$dir/menuitem.class.php");
 require("$dir/markdown.class.php");
 require("$dir/content.class.php");
@@ -11,12 +12,11 @@ class Mootorial
     public $html;
     
     // Private properties
-    private $sourcefolder;
+    private $sourcefolder = './Source';
     private $sourcefiles;
 	
 	// Constructor
-	public function __construct($sourcefolder){
-		$this->sourcefolder = $sourcefolder;
+	public function __construct(){
 		$this->getSourceFiles();
 		$this->getMenu();
 		$this->getHTML();
@@ -44,7 +44,8 @@ class Mootorial
 	}
 	
 	function getHTML(){
-		$content = new Content('./Source/06. MooTools FX');
+		$url = new URL();
+		$content = new Content('./Source/' . $url->match);
 		$this->html = $content->html;
 	}
 }
