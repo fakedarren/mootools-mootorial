@@ -36,6 +36,13 @@ class Content
 		foreach($this->getFiles() as $file){
 			$html .= Markdown(file_get_contents($this->folder . '/' . $file));
 		}
+		
+		function replacer($matches){
+			$id = strtolower(str_replace(" ", "-", $matches[1]));
+			return '<h2 id="' . $id . '">' . $matches[1] . '</h2>';
+		}
+		$html = preg_replace_callback('{<h2>([\s\S]*?)<\/h2>}', "replacer", $html);
+		
 		return $html; 
 	}
 
