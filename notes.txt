@@ -1,0 +1,20 @@
+To fix links:
+* search for [[ and replace with [ but be careful of examples with nested arrays
+* search for ]] and replace with ) "
+* search for | and replace with ](
+* this will only fix external links
+
+Watch for:
+* javascript, Javascript > JavaScript
+* acronyms that aren't capitalized (ajax > AJAX)
+* first person "I" should change to 1st person plural "we"; search for "me " and "I "
+* check external links to ensure they are still valid
+* look for more recent content on the web to link to
+* wrap references to methods and other code in back-ticks "`" so markdown can show these as fixed-width blocks
+* it's > its (where applicable) as the original author [that's-a-me!] often gets that shit mixed up
+* remove all the <code> wrappers and indent codeblocks
+* update examples with older doctypes to have an HTML5 doctype: `<!DOCTYPE HTML>`
+
+Questions:
+* how do I embed a runnable code sample?
+* how do I link to a page? how do deep link to a specific section of a page
