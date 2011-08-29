@@ -44,7 +44,7 @@ DIV.example, DIV.CodeMirror, TEXTAREA {
     float: right;
     left: -9999px;
     position: absolute;
-    margin: 25px 0 0 -300px;
+    margin: 25px 0 20px -300px;
     width: 650px;
 }
 DIV.example.current, DIV.CodeMirror.current, TEXTAREA.current {
