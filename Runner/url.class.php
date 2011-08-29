@@ -15,7 +15,7 @@ class URL
 		closedir($dir);
 		sort($folders);	
 		
-		$match = '';
+		$match = '00. Introduction';
 		
 		foreach ($folders as $folder){
 			$name = substr($folder, 4);
