@@ -26,6 +26,7 @@ This is a test
 #### JS
 
 	var foo = "";
+	$('foo').setStyle('background', 'red');
 	
 #### HTML
 	

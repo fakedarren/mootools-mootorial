@@ -28,6 +28,7 @@ $$('h4').each(function(heading){
 		if (classname == 'js'){
 			heading.addClass('current');
 			textarea.addClass('current');
+			Browser.exec(textarea.get('value'));
 		}
 	}
 });
