@@ -10,6 +10,11 @@ H1, H2, P {
 	clear: both;
 }
 
+BLOCKQUOTE {
+	background: #CCC;
+	padding: 10px;
+}
+
 .container {
 	margin: 0 auto;
 	width: 960px;
